@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: roar-web
+  name: roar-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: roar-web
+  template:
+    metadata:
+      labels:
+        app: roar-web
+    spec:
+      containers:
+      - image: quay.io/techupskills/roar-web:v1
+        imagePullPolicy: Always
+        name: roar-web
+        ports:
+        - containerPort: 8080
+          name: web

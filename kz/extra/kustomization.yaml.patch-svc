@@ -1,0 +1,13 @@
+resources:
+- ../staging
+
+
+# patch service name back to mysql
+patches:
+- patch: |-
+    - op: replace
+      path: "/metadata/name"
+      value: "mysql"
+  target:
+    kind: Service
+    name: "mysql-staging"

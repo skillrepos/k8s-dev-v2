@@ -1,0 +1,5 @@
+roar-db:
+  image: 
+    repository: quay.io/bclaster/roar-db-test
+    tag: v4
+

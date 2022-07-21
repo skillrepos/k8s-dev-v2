@@ -1,0 +1,11 @@
+
+resources:
+- ../../base
+
+namespace: roar-staging
+
+# Change the image name and version
+images:
+- name: quay.io/techupskills/roar-db:v2
+  newName: quay.io/bclaster/roar-db-test
+  newTag: v4

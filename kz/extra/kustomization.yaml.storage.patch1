@@ -1,0 +1,10 @@
+
+resources:
+- ../../base
+- storage.yaml
+
+namespace: roar-production
+
+# add in persistent storage
+patchesStrategicMerge:
+- patch_pv.yaml

@@ -1,0 +1,18 @@
+
+patchesJson6902:
+- patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/env/1
+      value:
+        name: MYSQL_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: dbp
+            key: dbp.info
+  target:
+    group: apps
+    kind: Deployment
+    name: mysql
+    version: v1
+
+

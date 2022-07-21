@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "roar-db.name" . }}
+  labels:
+    app: {{ template "roar-db.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "roar-db.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "roar-db.name" . }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: Always
+        ports:
+        - name: {{ .Values.deployment.ports.name }}
+          containerPort: {{ .Values.deployment.ports.containerPort }}
+        env:
+          - name: MYSQL_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                name: mysql-configmap
+                key: mysql.database
+          - name: MYSQL_PASSWORD
+            valueFrom: 
+              secretKeyRef:
+                name: mysqlsecret
+                key: mysqlpassword
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysqlsecret
+                key: mysqlrootpassword
+          - name: MYSQL_USER
+            valueFrom:
+              configMapKeyRef:
+                name: mysql-configmap
+                key: mysql.user
+       
+

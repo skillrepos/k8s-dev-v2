@@ -1,0 +1,16 @@
+commonAnnotations:
+  version: base
+
+namespace: roar-kz
+
+
+# List of resource files that kustomize reads, modifies
+# and emits as a YAML string
+resources:
+- ./roar-db/deployment.yaml
+- ./roar-db/service.yaml
+- ./roar-db/secret.yaml
+- ./roar-db/configmap.yaml
+- ./roar-web/deployment.yaml
+- ./roar-web/service.yaml
+- namespace.yaml

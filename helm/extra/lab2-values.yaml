@@ -1,0 +1,17 @@
+# Default values for roar-db-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  repository: quay.io/techupskills/roar-db
+  tag: v2
+replicaCount: 1
+nameOverride: mysql
+deployment:
+  ports:
+    name: mysql
+    containerPort: 3306
+service:
+  frontendPortName: "mysql"
+  externalPort: 3306
+  internalPort: 3306
+
