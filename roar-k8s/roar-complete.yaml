@@ -1,3 +1,6 @@
+# 
+# All-in-one manifest for Roar app
+#
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,7 +18,7 @@ spec:
         app: roar-web
     spec:
       containers:
-      - image: quay.io/techupskills/roar-web.1.10.1
+      - image: quay.io/bclaster/roar-web:1.10.1
         imagePullPolicy: Always
         name: roar-web
         ports:
@@ -26,9 +29,7 @@ spec:
              path: /roar/api/v1/status
              port: 8080
           initialDelaySeconds: 10
-          periodSeconds: 10
-      nodeSelector:
-        type: mini       
+          periodSeconds: 10       
 ---
 apiVersion: v1
 kind: Service
@@ -43,7 +44,7 @@ spec:
     targetPort: 8080
   selector:
     app: roar-web
-  type: NodePort
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -52,7 +53,7 @@ metadata:
     app: roar-db
   name: mysql
 spec:
-  replicas: 0
+  replicas: 1 
   selector:
     matchLabels:
       app: roar-db
@@ -81,15 +82,16 @@ spec:
           name: mysql
         resources:
           limits:
-            memory: "100Gi"
+            memory: "6Gi"
             cpu: "1000m"
           requests:
             cpu: "1000m"
-            memory: "100Gi"
+            memory: "4Gi"
         readinessProbe:
           exec:
             command:
             - mysql
+            - --version  
           failureThreshold: 3
           initialDelaySeconds: 5     
 ---
