@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: {{ .Chart.Name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: quay.io/techupskills/roar-db:v2
         imagePullPolicy: Always
         ports:
         - name: {{ .Values.deployment.ports.name }}
