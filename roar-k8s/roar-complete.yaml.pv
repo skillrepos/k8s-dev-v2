@@ -1,12 +1,15 @@
+# 
+# All-in-one manifest for Roar app
+#
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: roar-web
   name: roar-web
-  namespace: roar
 spec:
   replicas: 1
+
   selector:
     matchLabels:
       app: roar-web
@@ -16,12 +19,18 @@ spec:
         app: roar-web
     spec:
       containers:
-      - image: localhost:5000/roar-web:v1
+      - image: quay.io/bclaster/roar-web:1.10.1
         imagePullPolicy: Always
         name: roar-web
         ports:
         - containerPort: 8080
           name: web
+        livenessProbe:
+          httpGet:
+             path: /roar/api/v1/status
+             port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10       
 ---
 apiVersion: v1
 kind: Service
@@ -29,7 +38,6 @@ metadata:
   labels:
     app: roar-web
   name: roar-web
-  namespace: roar
 spec:
   ports:
   - name: frontend
@@ -37,7 +45,7 @@ spec:
     targetPort: 8080
   selector:
     app: roar-web
-  type: NodePort
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -45,7 +53,6 @@ metadata:
   labels:
     app: roar-db
   name: mysql
-  namespace: roar
 spec:
   replicas: 1
   selector:
@@ -85,8 +92,23 @@ spec:
         ports:
         - containerPort: 3306
           name: mysql
+        resources:
+          limits:
+            memory: "6Gi"
+            cpu: "1000m"
+          requests:
+            cpu: "1000m"
+            memory: "4Gi"
+        readinessProbe:
+          exec:
+            command:
+            - mysql
+            - --version  
+          failureThreshold: 3
+          initialDelaySeconds: 5     
+
         volumeMounts:
-        - mountPath: /var/lib/mysql
+	- mountPath: /var/lib/mysql
           name: mysql-pv-claim
       volumes:
       - name: mysql-pv-claim
@@ -99,7 +121,6 @@ metadata:
   labels:
     app: roar-db
   name: mysql
-  namespace: roar
 spec:
   ports:
   - name: mysql
@@ -107,7 +128,4 @@ spec:
     targetPort: 3306
   selector:
     app: roar-db
-    targetPort: 3306
-  selector:
-    name: mysql
 
