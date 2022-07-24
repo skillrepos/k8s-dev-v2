@@ -1,0 +1,7 @@
+For lab 6, step 8
+
+$ helm template . --debug --set roar-db.image.repository=quay.io/bclaster/roar-db-test --set roar-db.image.tag=v4 | grep image
+
+For lab 6, step 10
+
+helm upgrade -n roar-helm roar-helm . --set roar-db.image.repository=quay.io/bclaster/roar-db-test --set roar-db.image.tag=v4 --recreate-pods
