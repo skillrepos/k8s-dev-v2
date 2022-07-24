@@ -106,9 +106,8 @@ spec:
             - --version  
           failureThreshold: 3
           initialDelaySeconds: 5     
-
         volumeMounts:
-	- mountPath: /var/lib/mysql
+        - mountPath: /var/lib/mysql
           name: mysql-pv-claim
       volumes:
       - name: mysql-pv-claim
