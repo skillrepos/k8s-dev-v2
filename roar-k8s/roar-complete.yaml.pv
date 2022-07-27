@@ -86,7 +86,7 @@ spec:
               configMapKeyRef:
                 name: mysql-configmap
                 key: mysql.user
-        image: localhost:5000/roar-db:v1
+        image: quay.io/techupskills/roar-db:1.0.1
         imagePullPolicy: Always
         name: mysql
         ports:
