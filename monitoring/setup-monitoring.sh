@@ -5,7 +5,7 @@ echo ...Installing Prometheus and Grafana
 echo
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
-helm install -n monitoring monitoring prometheus-community/kube-prometheus-stack
+helm install -n monitoring monitoring --version="38.0.3" prometheus-community/kube-prometheus-stack
 echo
 echo ...Installing Kubernetes dashboard
 echo
