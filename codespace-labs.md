@@ -694,4 +694,255 @@ Ctrl-C
 **[END OF LAB]**
 </p>
 
+**Lab 7 - Run a basic Kustomize example**
 
+**Purpose:  In this lab, we’ll see how to make a set of manifests usable with Kustomize and how to use Kustomize to add additional changes without modifying the original files.**
+
+(For these labs, we have  "alias kz=kustomize" if you have kustomize installed. You may also use “kubectl kustomize” in place of “kz build” and “kubectl apply -k” in place of running Kustomize and kubectl via a pipe to apply.) 
+
+1.	Change to the base  subdirectory. In this directory, we have deployment and service manifests for a simple webapp that uses a MySQL database and a file to create a namespace.  You can see the files by running the recursive directory command (or tree if you have it installed).
+
+```
+cd ~/k8s-dev/kz/base
+ls -R 
+```
+
+2.	 Let's see what happens when we try to run "kustomize build" against these files. (On the VM, I have "kustomize" aliased as "kz".)  There will be an error.
+
+```
+kz build (or kubectl kustomize)
+```
+
+3.	Notice the error message about there not being a kustomization file.  Let's add one.  There's a basic one in the "extra" directory named "kustomization.yaml".  Copy it over into the directory.  Take a look at the contents to see what it does and then run the build command again, passing it to kubectl apply.
+
+```
+cp ../extra/kustomization.yaml kustomization.yaml
+cat kustomization.yaml
+kz build | k apply -f -  (or kubectl apply -k .)
+```
+
+4.	So  which namespace did this get deployed to?  It went to the "default" one which you can see by looking at what's in there.  
+
+```
+k get all
+```
+
+5.	We have a namespace.yaml file in the directory.  Take a look at it. It is setup to create a namespace.  So how do we use it with Kustomize?  Since it's another resource, we just need to include it in our list of resources.  And then we also need to specify the namespace it creates ("roar-kz") in the kustomization file.  
+
+Edit the kustomization.yaml file and add the namespace line at the top (line 2) and add namespace.yaml at the end of the list of resources (line 11).  Save your changes and exit the editor when done.  (gedit is installed on the VM. You may use a different editor in place of <edit> if you want.)
+
+```
+cat namespace.yaml
+
+<edit> kustomization.yaml
+```
+
+ 
+6.	Now that we've added the namespace resource, let's try the kustomize build command again to see if our namespace "roar-original" shows up where expected.  You should see the manifest to create the namespace now included at the top of the output and the various resources having the namespace added.
+
+```
+kz build | grep -n3 roar-kz
+```
+
+7.	Now we can go ahead and apply this again.  Afterwards you can verify that the new namespace got created and that our application is running there.
+
+```
+kz build | k apply -f -
+k get ns
+k get all -n roar-kz
+```
+
+8.	Let's make one more change here.  Let's apply a common annotation to our manifests.  Edit the kustomization file again and add the top 2 lines as shown in the screenshot.  When you are done, save your changes and exit the editor.
+
+```   
+<edit> kustomization.yaml
+```
+	The 2 lines are:
+ ```
+		commonAnnotations:
+           version: base   
+```                          
+ 
+10.	Now you can run kustomize build and see the annotations. Afterwards you can go ahead and apply the changes.  Look for the added annotation to all the resources.
+
+```     
+kz build | grep -a5 metadata
+
+kz build | k apply -f -
+```
+
+10.	The instance of our application should be running in the roar-kz namespace.  If you want to look at it, you can find the Nodeport where it is running and then open up the URL with that port in a browser to see the running application.
+
+```
+k get svc -n roar-kz | grep web 
+```    
+<find Nodeport - second to last column - value after 8089 - value in the 30000's>
+
+11.	 If you are not running in the VM, do a port-forward from the service as before.
+
+12.	Open http://localhost:<nodeport>/roar in browser
+
+<p align="center">
+**[END OF LAB]**
+</p>
+
+**Lab 8 -  Creating Variants**
+**Purpose:  In this lab, we’ll see how to create production and stage variants of our simple application.**
+
+1.	To illustrate how variants work, we'll first create a directory for the overlays that will create our staging and production variants.  Change back to the kz directory and create the two directories.
+
+```
+cd ~/k8s-dev/kz
+
+mkdir -p overlays/staging overlays/production
+```
+
+2.	To pick up the necessary files to build the variants we'll need kustomization.yaml files in the directories pointing back to the appropriate resources.  For simplicity, we'll just seed the directories with a kustomization.yaml file that points back to our standard bases. Execute the copy commands below to do this.  After this, your directory tree should look as shown at the end of this step.
+
+```
+cp extra/kustomization.yaml.variant overlays/staging/kustomization.yaml
+cp extra/kustomization.yaml.variant overlays/production/kustomization.yaml
+ls -R overlays (or ‘tree overlays’ if you have tree installed)
+
+overlays
+├── production
+│   └── kustomization.yaml
+└── staging
+    └── kustomization.yaml
+```
+
+3.	We now have an overlay file that we can use with Kustomize.  Take a look at what's in it and then let's make sure we can build with it.
+
+```   
+cat overlays/staging/kustomization.yaml 
+kz build overlays/staging
+```
+
+5.	What namespace will this deploy to if we apply it as is?  Look back up through the output from the previous step.  Notice that if we applied it as is, it would go to the roar-kz namespace. Let's use separate namespaces for the staging overlay and the production overlay.  To do that we'll just add the namespace transformer to the two new kustomization.yaml files. You can either edit the files and add the respective lines or just use the shortcut below.
+$ echo namespace: roar-staging >> overlays/staging/kustomization.yaml
+$ echo namespace: roar-production >> overlays/production/kustomization.yaml
+
+6.	Now you can do a kustomize build on each to verify it has the desired namespace in the output.  
+
+```
+kz build overlays/staging | grep namespace
+
+kz build overlays/production | grep namespace
+```
+
+
+6.	Let's go ahead and apply these to get the variants of our application running.  Since we didn't include a different namespace file to create the namespaces, we'll need to create those first. Then we can build and apply the variants. If you want afterwards, you can do the same thing we did at the end of lab 1 to find the nodeports and see the variants running.  (You can ignore the warnings.)
+
+```
+k create ns roar-staging
+k create ns roar-production
+
+kz build overlays/staging | k apply -f -
+kz build overlays/production | k apply -f -
+```
+
+7.	Let's suppose that we want to make some more substantial changes in our variants.  For example, we want to use test data in the version of our app running in the roar-staging namespace. The test data is contained in a different image at  quay.io/bclaster/roar-db-test:v4.  To make the change we'll use another transformer called "images". To use this, edit the kustomization.yaml file in the overlays/staging area and add the lines shown at the end of the file in the screenshot below (starting at line 10).
+
+(There is also a "kustomization.yaml.test-image" file in the "extra" directory if you need a reference.)
+
+```
+<edit> overlays/staging/kustomization.yaml
+images:
+- name: quay.io/techupskills/roar-db:v2
+  newName: quay.io/bclaster/roar-db-test
+  newTag: v4
+``` 
+
+8.	Save your changes, close the editor, and then apply the variant.  
+
+```
+kz build overlays/staging | k apply -f -
+```
+
+9.	You can now find the nodeport for the service from roar-staging.
+
+```
+k get svc -n roar-staging | grep web
+```
+
+10.	If you are not running in the VM, do a port-forward from the service as before.
+
+
+11.	Refresh and see the test version of the data.
+
+<p align="center">
+**[END OF LAB]**
+</p>
+
+**Lab  9 - Monitoring**
+
+**Purpose:  This lab will introduce you to a few of the ways we can monitor what is happening in our Kubernetes cluster and objects.**
+
+1.	First, let’s look at the built-in Kubernetes dashboard. You should already have this installed from the setup.  (If not, there is a “setup-monitoring.sh” script in the “monitoring” directory that you can try.) You  can use a simple port-forward to access. Do this in a secondary terminal session.
+
+```
+k port-forward -n kubernetes-dashboard svc/kubernetes-dashboard :443 &
+```
+
+2.	Take the port you get back from the command above - the one after "127.0.0.1"  and open up a browser to: (If you get a warning, just click on “Advanced” and then “Accept the Risk and Continue”)
+
+```
+https://localhost:<port>
+```
+
+3.	In the browser, you'll see a login screen.  We'll use the token option to get in. You may already have the token from the setup. If not, in the k8s-dev/monitoring directory is a script to generate the token.  Run the script and then copy the output.
+
+```
+./get-token.sh
+```
+
+4.	At the login screen, select "Token" as the access method, and paste the token you got from the step above.
+ 
+5.	The dashboard for our cluster will now show.  You can choose K8s objects on the left and get a list of them, explore them, etc.
+ 
+6.	Now let’s look at some metrics gathering with a tool called Prometheus. You should already have these installed from the setup.  First, we will do a port-forward to access the Prometheus UI in our browser.
+
+```
+kubectl port-forward -n monitoring svc/monitoring-kube-prometheus-prometheus 9090:9090 &
+```
+
+7.	 Now, in a new browser tab, go to http://localhost:9090 . You should see a screen like the one below:
+ 
+8.	Prometheus comes with a set of built-in metrics.  Just start typing in the “Expression” box.  For example, let’s look at one called “apiserver_request_total”.  Just start typing that in the Expression box. After you begin typing, you can select it in the list that pops up. After you have got it in the box, click on the blue “Execute” button.
+
+9.	Now, scroll down and look at the console output (assuming you have the Table tab selected).
+
+10.	Next, click on the blue “Graph” link next to “Console” and take a look at the graph of responses.  Note that you can hover over points on the graph to get more details. You can click "Execute" again to refresh.
+ 
+11.	You can also see the metrics being automatically exported for the node. If not running in the VM, do a port forward on the node-exporter service.
+
+```
+kubectl port-forward -n monitoring svc/monitoring-prometheus-node-exporter 9100:9100 &
+```
+
+12.	And then open up a browser to http://localhost:9100/metrics
+
+13.	 Now let’s change the query to show the rate of apiserver total requests over 1 minute intervals.  Go back to the main Prometheus screen.  In the query entry area, change the text to be what is below and then click on the Execute button to see the results in the graph.
+
+```
+rate(apiserver_request_total[1m])
+```
+
+14.	Finally, let’s take a look at Grafana. First you need to get the default Grafana password. You should have that from the setup.  But if not, you can do that by running the ./get-grafana-initial-pw.sh command in the monitoring directory.
+
+
+15.	 Then you can do a port forward for the "monitoring-grafana" service.  You can pick a port or let it pick one.  In this case, I've used 8082.
+
+```
+k port-forward -n monitoring svc/monitoring-grafana 8082:80  & 
+```
+
+16.	Open a browser to localhost:8082 (or whatever port you used). Login with username "admin" and the initial password.
+
+17.	  Click on the magnifying glass for "search” (left red circle in figure below). This will provide you with a list of built-in graphs you can click on as demos and explore.
+ 
+18.	 Click on one of the links to view one of the demo graphs (such as the "Kubernetes / API server" one) shown in the figure below). You can then explore others by discarding/saving this one and going back to the list and selecting others.
+
+<p align="center">
+**[END OF LAB]**
+</p>
