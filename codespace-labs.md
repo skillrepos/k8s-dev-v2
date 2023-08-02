@@ -243,6 +243,335 @@ k get ep
 
 After refresh…
 
+<p align="center">
+**[END OF LAB]**
+</p>
+
+**Lab 3 - Working with Kubernetes secrets and configmaps**
+
+**Purpose:  In this lab we’ll get some practice storing secure and insecure information in a way that is accessible to k8s but not stored in the usual deployment files.**
+
+1.	In preparation for the next few labs, remove the old roar-complete.yaml file that had the issues we temporarily fixed in labs 1 and 2 and then replace it with a version that has the issues fixed in the file.
+
+```   
+rm roar-complete.yaml
+mv roar-complete.yaml.fixed roar-complete.yaml
+```
+
+2.	Cat the roar-complete.yaml and look at the “env” block that starts at line 69. We really shouldn’t be exposing usernames and passwords in here.
+
+```     
+cat -n roar-complete.yaml
+```
+
+3.	Let’s explore two ways of managing environment variables like this so they are not exposed - Kubernetes “secrets” and “configmaps”. First, we'll look at what a default secret does by running the base64 encoding step on our two passwords that we’ll put into a secret.  Run these commands (the first encodes our base password and the second encodes our root password ).   
+
+```
+echo -n 'admin' | base64
+```
+
+This should yield:
+  			        YWRtaW4=
+Then do:
+
+```
+echo -n 'root+1' | base64
+```
+
+This should yield: 
+  			       cm9vdCsx
+            
+4.  Now we need to put those in the form of a secrets manifest (yaml file for Kubernetes).  For convenience, there is already a “mysqlsecret.yaml” file in the same directory with this information.  Take a quick look at it and then use the apply command to create the actual secret.
+
+```
+cat mysql-secret.yaml
+kubectl apply -f mysql-secret.yaml
+```
+
+6.  Now that we have the secret created in the namespace, we need to update our spec to use the values from it.  You don't need to make any changes in this step, but the change will look like this:
+       from:
+    
+```    
+- name: MYSQL_PASSWORD
+      value: admin
+    - name: MYSQL_ROOT_PASSWORD
+      value: root+1
+```
+
+   to:
+
+```   
+- name: MYSQL_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: mysqlsecret
+      key: mysqlpassword
+-	name: MYSQL_ROOT_PASSWORD
+   valueFrom:
+     secretKeyRef:
+       name: mysqlsecret
+       key: mysqlrootpassword
+```
+
+6.  We also have the MYSQL_DATABASE and MYSQL_USER values that we probably shouldn’t expose in here.   Since these are not sensitive data, let’s put these into a Kubernetes ConfigMap and update the spec to use that.  For convenience, there is already a “mysql-configmap.yaml” file in the same directory with this information.  Take a quick look at it and then use the apply command to create the actual secret.
+
+```
+cat mysql-configmap.yaml
+k apply -f mysql-configmap.yaml
+```
+
+7.  Like the changes to use the secret, we would need to change the main yaml file to use the new configmap.  Again, you don't need to make any changes in this step, but that change would look like this:
+      from:
+    
+```    
+-	name: MYSQL_DATABASE
+         value: registry
+```
+
+to
+
+```
+    - name: MYSQL_DATABASE
+         valueFrom:
+           configMapKeyRef:
+             name: mysql-configmap
+             key: mysql.database
+        And from:
+        - name: MYSQL_USER
+          value: admin
+         to
+ - name: MYSQL_USER
+           valueFrom:
+             configMapKeyRef:
+               name: mysql-configmap
+               key: mysql.user
+```
+
+9.  In the current directory, there’s already a “roar-complete.yaml.configmap file with the changes in it for accessing the secret and the configmap.   Diff the two files with the visual diff tool “meld” (or whatever diff tool you have installed) to see the differences.
+
+```
+meld roar-complete.yaml roar-complete.yaml.configmap 
+```
+
+(You may need to stretch the meld window to be able to see the differences.)
+
+10.  Now we’ll update our roar-complete.yaml file with the needed changes. To save trying to get the yaml all correct in a regular editor, we’ll just use the meld tool’s merging ability.   
+In the meld window, on the right pane (the one with roar-complete.yaml.configmap), click the arrow that points left to replace the code in our roar-complete.yaml file with the new code from the roar-complete.yaml.configmap file.  (In the figure below, this is the arrow that is circled.)  
+
+
+11. You should then see messages pop up that the files are identical.  Click on the Save button at the top to save the changes.  Then you can close the meld application. 
+
+
+12.  Apply the new version of the yaml file to make sure it is syntactically correct.
+
+```
+kubectl apply -f roar-complete.yaml
+```
+
+<p align="center">
+**[END OF LAB]**
+</p>
+
+**Lab 4 – Working with persistent storage – Kubernetes Persistent Volumes and Persistent Volume Claims**
+**Purpose: In this lab, we’ll see how to connect pods with external storage resources via persistent volumes and persistent volume claims.**
+
+1.	While we can modify the containers in pods running in the Kubernetes namespaces, we need to be able to persist data outside of them.  This is because we don’t want the data to go away when something happens to the pod.   Let’s take a quick look at how volatile data is when just stored in the pod.  If you don't already have a browser session open browser with the instance that you’re running in the “roar” namespace, open it again. (Ref lab 2, steps 1-5, if you need to do this again.)
+
+
+2.	There is a very simple script in our roar-k8s directory that we can run to insert a record into the database in our mysql pod.  If you want, you can  take a look at the file update-db.sh to see what it’s doing. Run it, refresh the browser, and see if the additional record shows up.  (Make sure to pass in the namespace – “roar” and don’t forget to refresh the browser afterwards.)  You can ignore the warnings.
+
+```
+./update-db.sh <namespace> (such as ./update-db.sh roar)
+```
+
+3.	After you refresh your browser, you should see a record for “Woody Woodpecker” in the table.   Now, what happens if we delete the mysql pod and let Kubernetes recreate it?   
+
+```
+k delete pod -l app=roar-db
+```
+
+4.	After a moment, a new mysql pod will be started up. When that happens, refresh the browser and notice that the record we added for “Woody Woodpecker” is no longer there.  It disappeared when the pod went away.  
+
+5.	This happened because the data was all contained within the pod’s filesystem. In order to make this work better, we need to define a persistent volume (PV) and persistent volume claim (PVC) for the deployment to use/mount that is outside of the pod.   As with other objects in Kubernetes, we first define the yaml that defines the PV and PVC.  The file storage.yaml defines these for us.  Take a look at it now.
+
+```
+cat storage.yaml
+```
+
+6.	Now create the objects specified here.
+
+```
+k apply -f storage.yaml
+```
+
+7.	Now that we have the storage objects instantiated in the namespace, we need to update our spec to use the values from it.  In the file the change would be to add the lines in bold in the container’s spec area:
+
+```
+         spec:
+           containers:
+           - name: mysql
+       …
+  - name: MYSQL_USER
+    valueFrom:
+      configMapKeyRef:
+        name: mysql-configmap
+        key: mysql.user
+volumeMounts:
+- mountPath: /var/lib/mysql
+  name: mysql-pv-claim
+        volumes:
+        - name: mysql-pv-claim
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim
+```
+
+8.	In the current directory, there’s already a “roar-complete.yaml.pv file with the changes in it for accessing the storage objects.   Diff the two files with the visual diff tool “meld” to see the differences.
+
+```
+meld roar-complete.yaml roar-complete.yaml.pv 
+```
+
+9.	Now we’ll update our roar-complete.yaml file with the needed changes. To save trying to get the yaml all correct in a regular editor, we’ll just use the meld tool’s merging ability.   In the meld window, on the right pane (the one with roar-complete.yaml.pv), click the arrow that points left to replace the code in our roar-complete.yaml file with the new code from the roar-complete.yaml.pv file.  (In the figure below, this is the arrow that is circled.)  
+
+(NOTE: Ignore any other changes)
+
+
+10.	You should then see messages pop up that the files are identical.  Click on the Save button at the top to save the changes.  Then you can close the meld application. 
+
+11.	 Apply the new version of the yaml file to make sure it is syntactically correct.
+
+```
+kubectl apply -f roar-complete.yaml
+```
+
+12.	Force a refresh in the running instance of the app in the browser.  Look at the local area for the mount.  You should see data from mysql.
+
+```
+ls -la /mnt/data
+```
+
+(If you don't see data, check to see if the most recent pod is running and ready.  If not, you may be hitting a resource issue with old replicasets. The command below can be used to get rid of obsolete replicasets.  
+
+```
+kubectl get rs | grep "0 " | cut -d' ' -f1 | xargs kubectl delete rs )
+```
+
+13.	 Add the extra record again into the database.
+
+```
+./update-db.sh <namespace>
+```
+
+ (such as ./update-db.sh roar)
+
+14.	 Refresh the browser to force data to be written out the disk location.
+
+15.	Repeat step 3 to kill off the current mysql pod.   After it is recreated,  refresh the screen and notice that the new record is still there!
+
+<p align="center">
+**[END OF LAB]**
+</p>
+
+**Lab 5 – Working with Helm**
+**Purpose:  In this lab, we’ll compare a Helm chart against standard Kubernetes manifests and then deploy the Helm chart into Kubernetes**
+
+1.	For this lab, reset the default namespace.
+
+```   
+k config set-context --current --namespace=default
+```
+
+2.	In the manifests subdir, we have the “regular” Kubernetes manifests for our app, with the database pieces in a sub area under the web app pieces.  Then in the helm  subdir, we have a similar structure with the charts for the two apps.  
+
+To get a better idea of how Helm structures content, do a diff of the two areas.  If you are running in the VM, or have meld installed, you can use it and you will see a picture similar to below.  Otherwise, you can use any suitable diffing tool.  
+
+```
+cd ~/k8s-dev 
+
+meld manifests helm
+``` 
+
+3.	Notice the format of the two area is similar, but the helm one is organized as chart structures.
+
+Let’s take a closer look at the differences between a regular K8s manifest and one for Helm.  We’ll use the deployment one from the web app. Again, you can use meld or a suitable diffing/comparison tool.  Notice the differences in the two formats, particularly the placeholders in the Helm chart (with the {{ }} pairs instead of the hard-coded values.
+
+```
+meld manifests/roar-web/deployment.yaml helm/roar-web/templates/deployment.yaml
+```
+ 
+4.	We are not making any changes here, so go ahead and close meld (or any other diff tool you’re using) when you’re done looking at the differences.  We've already seen how to deploy the standard Kubernetes manifests and how to look at the app running in the browser. Now let’s install the helm release to see how those are deployed.  
+
+5.	Now let's install the helm release.
+
+```
+helm install roar-helm helm/roar-web
+```
+
+You should see output like the following:
+```
+NAME: roar-helm
+LAST DEPLOYED: Thu May 18 21:32:04 2023
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None	
+```
+
+6.	Look at the Helm releases we have running in the cluster now and the resources it added to the default namespace.
+
+```
+helm list -A
+You should see output like the following (you can ignore the monitoring one):
+NAME      	NAMESPACE 	REVISION	UPDATED                                	STATUS  	CHART                       	APP VERSION
+monitoring	monitoring	1       	2023-05-17 07:29:09.973839165 -0400 EDT	deployed	kube-prometheus-stack-38.0.3	0.57.0     
+roar-helm 	default   	1       	2023-05-18 21:32:04.31820136 -0400 EDT 	deployed	roar-web-0.1.0
+
+k get all
+```
+
+7.	We really don't want this running in the default namespace. We'd rather have it running in a specific one for the application.  Let's get rid of the resources in K8s tied to this roar-helm release and verify that they're gone.
+
+```
+helm uninstall roar-helm
+
+helm list -A
+
+k get all
+```
+
+8.	Now we can create a new namespace just for the helm version and deploy it into there.  Note the addition of the “-n roar-helm” argument to direct it to that namespace.
+
+```
+k create ns roar-helm
+
+helm install -n roar-helm roar-helm helm/roar-web
+
+helm list -A
+
+k get all -n roar-helm
+```
+
+9.	After a minute or two, the application should be running in the cluster in the roar-helm namespace.  If you want, you can look at the app running on your system.  This service is setup as a type NodePort, so we need to first find the NodePort value.  It will be after 8089: in the output of the following command and will have a value in the 30000's.
+
+```
+k get svc -n roar-helm
+```
+
+10.	 If you are not running on the VM, you will need to do a port-forward command first to expose the port, like the following:
+
+```
+k port-forward -n roar-helm svc/roar-web <nodeport-from-step-9>:8089 &
+```
+
+11.	 Now you can  open up a browser session to the url below and see the running application from the roar-helm namespace.
+
+```
+http://localhost:<nodeport-value-from-step-9>/roar
+```
+
+<p align="center">
+**[END OF LAB]**
+</p>
 
 1.  Before we launch any more deployments, let's set up some specific policies and classes of pods that
 work with those policies. First, we'll setup some priority classes. Take a look at the definition of the
