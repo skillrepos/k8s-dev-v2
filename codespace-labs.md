@@ -26,7 +26,8 @@ we want to create. These can be separate files, or they can be combined. For
 our project, there is a combined one (deployments and services for both the web
 and db pieces) already setup for you in the k8s-dev/roar-k8s directory. Change 
 into that directory and take a look at the yaml file there for the Kubernetes
-deployments and services.
+deployments and services. In the file explorer to the left,
+ select the file [**roar-k8s/roar-complete.yaml**](./roar-k8s/roar-complete.yaml) 
 
 ```
 cd roar-k8s
@@ -186,15 +187,14 @@ k logs -l app=roar-db
 ```
 
 7. Things should look ok in the logs. Let's use exec to run a query from the
-database. If you are on Windows, you will need the "winpty" command in 
-front. You'll need the pod name of the mysql pod name (which you can get
+database. You'll need the pod name of the mysql pod name (which you can get
 from 'k get pods' and then copy just the NAME part for the mysql pod). Also
 use "kubectl" here, not the alias "k".
 
 ```
 kubectl get pods | grep mysql (to get the db pod's name)
 
-$ [winpty (if on windows)] kubectl exec -it <mysql-pod-name> -- mysql
+$ kubectl exec -it <mysql-pod-name> -- mysql
 -uadmin -padmin -e 'select * from registry.agents'
 ```
 
@@ -258,7 +258,8 @@ rm roar-complete.yaml
 mv roar-complete.yaml.fixed roar-complete.yaml
 ```
 
-2.	Cat the roar-complete.yaml and look at the “env” block that starts at line 69. We really shouldn’t be exposing usernames and passwords in here.
+2.	Cat the roar-complete.yaml and look at the “env” block that starts at line 69. We really shouldn’t be exposing usernames and passwords in here. In the file explorer to the left,
+ select the file [**roar-k8s/roar-complete.yaml.fixed**](./roar-k8s/roar-complete.yaml.fixed) 
 
 ```     
 cat -n roar-complete.yaml
@@ -281,7 +282,8 @@ echo -n 'root+1' | base64
 This should yield: 
   			       cm9vdCsx
             
-4.  Now we need to put those in the form of a secrets manifest (yaml file for Kubernetes).  For convenience, there is already a “mysqlsecret.yaml” file in the same directory with this information.  Take a quick look at it and then use the apply command to create the actual secret.
+4.  Now we need to put those in the form of a secrets manifest (yaml file for Kubernetes).  For convenience, there is already a “mysqlsecret.yaml” file in the same directory with this information.  Take a quick look at it and then use the apply command to create the actual secret. In the file explorer to the left,
+ select the file [**roar-k8s/mysql-secret.yaml**](./roar-k8s/mysql-secret.yaml) 
 
 ```
 cat mysql-secret.yaml
@@ -313,7 +315,8 @@ kubectl apply -f mysql-secret.yaml
        key: mysqlrootpassword
 ```
 
-6.  We also have the MYSQL_DATABASE and MYSQL_USER values that we probably shouldn’t expose in here.   Since these are not sensitive data, let’s put these into a Kubernetes ConfigMap and update the spec to use that.  For convenience, there is already a “mysql-configmap.yaml” file in the same directory with this information.  Take a quick look at it and then use the apply command to create the actual secret.
+6.  We also have the MYSQL_DATABASE and MYSQL_USER values that we probably shouldn’t expose in here.   Since these are not sensitive data, let’s put these into a Kubernetes ConfigMap and update the spec to use that.  For convenience, there is already a “mysql-configmap.yaml” file in the same directory with this information.  Take a quick look at it and then use the apply command to create the actual secret. In the file explorer to the left,
+ select the file [**roar-k8s/mysql-configmap.yaml**](./roar-k8s/mysql-configmap.yaml) 
 
 ```
 cat mysql-configmap.yaml
@@ -392,7 +395,8 @@ k delete pod -l app=roar-db
 
 4.	After a moment, a new mysql pod will be started up. When that happens, refresh the browser and notice that the record we added for “Woody Woodpecker” is no longer there.  It disappeared when the pod went away.  
 
-5.	This happened because the data was all contained within the pod’s filesystem. In order to make this work better, we need to define a persistent volume (PV) and persistent volume claim (PVC) for the deployment to use/mount that is outside of the pod.   As with other objects in Kubernetes, we first define the yaml that defines the PV and PVC.  The file storage.yaml defines these for us.  Take a look at it now.
+5.	This happened because the data was all contained within the pod’s filesystem. In order to make this work better, we need to define a persistent volume (PV) and persistent volume claim (PVC) for the deployment to use/mount that is outside of the pod.   As with other objects in Kubernetes, we first define the yaml that defines the PV and PVC.  The file storage.yaml defines these for us.  Take a look at it now. In the file explorer to the left,
+ select the file [**roar-k8s/storage.yaml**](./roar-k8s/storage.yaml) 
 
 ```
 cat storage.yaml
@@ -576,17 +580,17 @@ http://localhost:<nodeport-value-from-step-9>/roar
 **Lab 6:  Templating with Helm**
 **Purpose: In this lab, you’ll get to see how we can change hard-coded values into templates, override values, and upgrade releases through Helm.**
 
-1.	Take a look at the deployment template in the roar-helm directory and notice what the "image" value is set to.
+1.	Take a look at the deployment template in the roar-helm directory and notice what the "image" value is set to. In the file explorer to the left, select the file [**helm/charts/roar-db/templates/deployment.yaml**](./helm/charts/roar-db/templates/deployment.yaml) 
 
 ```   
-cd ~/k8s-dev/helm/roar-web
+cd ../helm/roar-web
 
 grep image charts/roar-db/templates/deployment.yaml
 ``` 
 
 Notice that the value for image is hardcoded to "quay.io/techupskills/roar-db:v2".
 
-3.	We are going to change this to use the Helm templating facility.  This means we'll change this value in the deployment.yaml file to have "placeholders".  And we will put the default values we want to have in the values.yaml file.  You can choose to edit the deployment file with the "gedit" editor if running in the VM or use another editor if not running in the VM.   Or you can use the "meld" tool if running in the VM (or a different merge tool if not running in the VM) to add the differences from a file that already has them.  If using the meld tool, select the right arrow to add the changes from the second file into the deployment.yaml file.  Then save the changes.
+3.	We are going to change this to use the Helm templating facility.  This means we'll change this value in the deployment.yaml file to have "placeholders".  And we will put the default values we want to have in the values.yaml file.  You can choose to edit the deployment file with the "gedit" editor if running in the VM or use another editor if not running in the VM.   Or you can use the "meld" tool if running in the VM (or a different merge tool if not running in the VM) to add the differences from a file that already has them.  If using the meld tool, select the right arrow to add the changes from the second file into the deployment.yaml file.  Then save the changes. In the file explorer to the left, select the file [**helm/charts/roar-db/templates/deployment.yaml**](./helm/charts/roar-db/templates/deployment.yaml) 
    
 Either do:
 
@@ -611,7 +615,7 @@ $ meld charts/roar-db/templates/deployment.yaml ../extra/lab6-deployment.yaml
  
 Then click on the arrow circled in red in the figure.  This will update the template file with the change.  Then Save your changes and exit meld.
  
-5.	Now that we've updated the deployment template, we need to add default values.  We'll use the same approach as in the previous step to add defaults for the image.repository and image.tag values in the chart's values.yaml file.
+5.	Now that we've updated the deployment template, we need to add default values.  We'll use the same approach as in the previous step to add defaults for the image.repository and image.tag values in the chart's values.yaml file. In the file explorer to the left, select the file [**helm/charts/roar-db/values.yaml**](./helm/charts/roar-db/values.yaml) 
 
 Either do:
 
@@ -657,6 +661,7 @@ k port-forward -n roar-helm service/roar-web <nodeport-value>:8089 &
 
 7.	Open up a browser and go to  http://localhost:<NodePort>/roar/ 
 You should see the same webapp and data as before.
+
 8.	Let's suppose we want to overwrite the image used here to be one that is for a test database. The image for the test database is on the quay.io hub at quay.io/bclaster/roar-db-test:v4 .
 We could use a long command line string to set it and use the template command to show the proposed changes between the rendered files.  In the roar-web subdirectory, run the commands below to see the difference. (You should be in the ~/k8s-dev/helm/roar-web. Note the “.” In the commands.)
 
@@ -666,7 +671,7 @@ helm template . --debug | grep image
 helm template . --debug  --set roar-db.image.repository=quay.io/bclaster/roar-db-test     --set roar-db.image.tag=v4  |  grep image
 ```
 
-10.	Now, in another terminal window , start a watch of the pods in your deployed helm release.  This is so that you can see the changes that will happen when we upgrade.  
+9.	Now, in another terminal window , start a watch of the pods in your deployed helm release.  This is so that you can see the changes that will happen when we upgrade.  
 
 ```
 k get pods -n roar-helm --watch
@@ -682,9 +687,9 @@ helm upgrade -n roar-helm roar-helm . --set roar-db.image.repository=quay.io/bcl
 
 Ingore the warning. Watch the changes happening to the pods in the terminal window with the watch running.
 
-12.	Repeat steps 5 and 6 to get the nodeport and do the port-forward if you need to. Then go back to your browser and refresh it.  You should see a version of the (TEST) data in use now. (Depending on how quickly you refresh, you may need to refresh more than once.)
+11.	Repeat steps 5 and 6 to get the nodeport and do the port-forward if you need to. Then go back to your browser and refresh it.  You should see a version of the (TEST) data in use now. (Depending on how quickly you refresh, you may need to refresh more than once.)
  
-13.	Go ahead and stop the watch from running in the window via Ctrl-C.
+12.	Go ahead and stop the watch from running in the window via Ctrl-C.
 
 ```
 Ctrl-C
@@ -703,7 +708,7 @@ Ctrl-C
 1.	Change to the base  subdirectory. In this directory, we have deployment and service manifests for a simple webapp that uses a MySQL database and a file to create a namespace.  You can see the files by running the recursive directory command (or tree if you have it installed).
 
 ```
-cd ~/k8s-dev/kz/base
+cd ../kz/base
 ls -R 
 ```
 
@@ -713,7 +718,7 @@ ls -R
 kz build (or kubectl kustomize)
 ```
 
-3.	Notice the error message about there not being a kustomization file.  Let's add one.  There's a basic one in the "extra" directory named "kustomization.yaml".  Copy it over into the directory.  Take a look at the contents to see what it does and then run the build command again, passing it to kubectl apply.
+3.	Notice the error message about there not being a kustomization file.  Let's add one.  There's a basic one in the "extra" directory named "kustomization.yaml".  Copy it over into the directory.  Take a look at the contents to see what it does and then run the build command again, passing it to kubectl apply. In the file explorer to the left, select the file [**kz/base/kustomization.yaml**](./kz/base/kustomization.yaml) 
 
 ```
 cp ../extra/kustomization.yaml kustomization.yaml
@@ -729,7 +734,7 @@ k get all
 
 5.	We have a namespace.yaml file in the directory.  Take a look at it. It is setup to create a namespace.  So how do we use it with Kustomize?  Since it's another resource, we just need to include it in our list of resources.  And then we also need to specify the namespace it creates ("roar-kz") in the kustomization file.  
 
-Edit the kustomization.yaml file and add the namespace line at the top (line 2) and add namespace.yaml at the end of the list of resources (line 11).  Save your changes and exit the editor when done.  (gedit is installed on the VM. You may use a different editor in place of <edit> if you want.)
+Edit the kustomization.yaml file and add the namespace line at the top (line 2) and add namespace.yaml at the end of the list of resources (line 11).  Save your changes and exit the editor when done.  (gedit is installed on the VM. You may use a different editor in place of <edit> if you want.) [**kz/base/namespace.yaml**](./kz/base/namespace.yaml) 
 
 ```
 cat namespace.yaml
@@ -752,7 +757,7 @@ k get ns
 k get all -n roar-kz
 ```
 
-8.	Let's make one more change here.  Let's apply a common annotation to our manifests.  Edit the kustomization file again and add the top 2 lines as shown in the screenshot.  When you are done, save your changes and exit the editor.
+8.	Let's make one more change here.  Let's apply a common annotation to our manifests.  Edit the kustomization file again and add the top 2 lines as shown in the screenshot.  When you are done, save your changes and exit the editor. [**kz/base/kustomization.yaml**](./kz/base/kustomization.yaml) 
 
 ```   
 <edit> kustomization.yaml
@@ -841,7 +846,7 @@ kz build overlays/staging | k apply -f -
 kz build overlays/production | k apply -f -
 ```
 
-7.	Let's suppose that we want to make some more substantial changes in our variants.  For example, we want to use test data in the version of our app running in the roar-staging namespace. The test data is contained in a different image at  quay.io/bclaster/roar-db-test:v4.  To make the change we'll use another transformer called "images". To use this, edit the kustomization.yaml file in the overlays/staging area and add the lines shown at the end of the file in the screenshot below (starting at line 10).
+7.	Let's suppose that we want to make some more substantial changes in our variants.  For example, we want to use test data in the version of our app running in the roar-staging namespace. The test data is contained in a different image at  quay.io/bclaster/roar-db-test:v4.  To make the change we'll use another transformer called "images". To use this, edit the kustomization.yaml file in the overlays/staging area and add the lines shown at the end of the file in the screenshot below (starting at line 10).[**kz/overlays/staging/kustomization.yaml**](./kz/overlays/staging/kustomization.yaml) 
 
 (There is also a "kustomization.yaml.test-image" file in the "extra" directory if you need a reference.)
 
