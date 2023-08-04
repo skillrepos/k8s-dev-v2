@@ -7,11 +7,7 @@
 ```
 alias k=kubectl
 minikube start
-./monitoring/setup-monitoring.sh
 ```
-You will need to have a token to use to connect to the dashboard and the initial password for Grafana. 
-The setup doc references a script that will output these when it runs. Capture those and store them
-for use in lab 9.
 
 **Lab 1- Exploring and Deploying into Kubernetes**
 
