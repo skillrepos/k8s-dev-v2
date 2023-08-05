@@ -12,4 +12,7 @@ echo
 # install dashboard
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.5.0/aio/deploy/recommended.yaml
 kubectl apply -f /workspaces/k8s-dev-v2/monitoring/dashboard-rbac.yaml
-
+# install kustomize
+curl --silent --location --remote-name \"https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v3.5.4/kustomize_kustomize.v3.5.4_linux_amd64" 
+chmod a+x kustomize_kustomize.v3.5.4_linux_amd64 
+sudo mv kustomize_kustomize.v3.5.4_linux_amd64 /usr/local/bin/kustomize
