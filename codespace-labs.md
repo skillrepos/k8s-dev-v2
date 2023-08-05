@@ -7,6 +7,7 @@
 ```
 alias k=kubectl
 minikube start
+cd roar-k8s
 ```
 
 **Lab 1- Exploring and Deploying into Kubernetes**
@@ -20,16 +21,15 @@ debugging when Kubernetes deployments don't go as planned.**
 appropriate Kubernetes manifest yaml files for the different types of k8s objects
 we want to create. These can be separate files, or they can be combined. For
 our project, there is a combined one (deployments and services for both the web
-and db pieces) already setup for you in the k8s-dev/roar-k8s directory. Change 
-into that directory and take a look at the yaml file there for the Kubernetes
-deployments and services. In the file explorer to the left,
- select the file [**roar-k8s/roar-complete.yaml**](./roar-k8s/roar-complete.yaml) 
+and db pieces) already setup for you in the k8s-dev/roar-k8s directory. 
 
-```
-cd roar-k8s
-cat roar-complete.yaml
-```
-See if you can identify the different services and deployments in the file.
+Take a look at the yaml file there for the Kubernetes deployments and services. In the file explorer to the left,
+ select the file [**roar-k8s/roar-complete.yaml**](./roar-k8s/roar-complete.yaml) 
+ 
+ See if you can identify the different services and deployments in the file.
+
+ No changes need to be made.
+ Return to this tab when done.
 
 2. We’re going to deploy these into Kubernetes into a namespace. Take a look at the current list of
 namespaces and then let’s create a new namespace to use.
@@ -66,7 +66,7 @@ easier. First, let's set the default namespace to be 'roar' instead of 'default'
 don't have to pass "-n roar" all of the time.
 
 ```
-k config set-context --current -n roar
+k config set-context --current -namespace=roar
 ```
 
 6. Now let's get a list of the pods that shows their labels so we can access them by
@@ -97,40 +97,47 @@ path and name: "quay.io/techupskills/roar-web:1.10.1".
 
 10. The problem is that we don't have an image with the tag "1.10.1". There's a typo
 - instead we have a "1.0.1" version.
-  
+
+ 
 11. We can change the existing deployment to see if this fixes things. But first, let's
-setup a watch in a separate window so we can see how Kubernetes changes
-things when we make a change to the configuration.
-Do this one command in a separate terminal session:
+setup a watch in a separate terminal so we can see how Kubernetes changes
+things when we make a change to the configuration. 
+
+In the codespace, right-click and select the `Split Terminal` option. This will add a second terminal side-by-side with your other one.
+
+![Splitting the terminal](./images/k8sdev4.png?raw=true "Splitting the terminal")
+
+12.  In the right terminal, run a command to start a `watch` of pods in the roar namespace.
 
 ```
-k get pods -w
+kubectl get -n roar pods -w
 ```
+12. Back in the left terminal, do the following steps. 
 
-12. (Optional) Set your editor to a different one than the default one for text files if
+13. (Optional if you don't want to use VI ) Set your editor to a different one than the default one for text files if
 you want.
 
 ```
-export EDITOR=<path-to-editor-program>
+export EDITOR='code --wait'
 ```
 
-13. Edit the existing object.
+14. Edit the existing object.
 
 ```
 k edit deploy/roar-web
 ```
 
-Change line 39 to use 1.0.1 instead of 1.10.1. (If you see a
-message that says "Edit cancelled, no changes made", try going to
-another terminal session and just using the default editor to
-make the changes.)
+Change line 39 to use 1.0.1 instead of 1.10.1 in the file.  
+Save your changes and close the editor.
+If using the editor in the browser click on the X in the tab at the 
+top to save and close the file. 
 
-14. Save your changes to the deployment and close the editor. Look back to the
-terminal session where you have the watch running. Eventually, you should
+![Editing the file](./images/k8sdev5.png?raw=true "Editing the file")
+
+15. Look back to the terminal session where you have the watch running. Eventually, you should
 see a new pod finished creating and start running. The previous web pod will
-be terminated and removed. Leave the watch running in the other window
-for the next lab
- 
+be terminated and removed. Leave the watch running in the other session for the next lab.
+
 <p align="center">
 **[END OF LAB]**
 </p>
