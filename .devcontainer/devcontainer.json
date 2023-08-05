@@ -24,5 +24,5 @@
       ]
     }
   },
-  "postCreateCommand": "(minikube start && ~/k8s-dev-v2/extra/setup-monitoring.sh) || echo 'Could not auto-configure. Skipping.' "
+  "postCreateCommand": "(minikube start && ~/k8s-dev-v2/monitoring/setup-monitoring.sh) || echo 'Could not auto-configure. Skipping.' "
 }
