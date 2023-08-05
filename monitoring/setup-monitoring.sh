@@ -11,11 +11,11 @@ echo ...Installing Kubernetes dashboard
 echo
 # install dashboard
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.5.0/aio/deploy/recommended.yaml
-kubectl apply -f ~/k8s-dev/monitoring/dashboard-rbac.yaml
+kubectl apply -f ~/k8s-dev-v2/monitoring/dashboard-rbac.yaml
 echo
 echo ---- TOKEN to use for logging into dashboard follows ---
 echo 
-~/k8s-dev/monitoring/get-token.sh
+~/k8s-dev-v2/monitoring/get-token.sh
 echo
 echo 
 echo --------------------------------------------------------
