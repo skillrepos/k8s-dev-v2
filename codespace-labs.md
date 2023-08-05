@@ -357,7 +357,7 @@ TO:
 8.  In the current directory, there’s already a **roar-complete.yaml.configmap** file with the changes in it for accessing the secret and the configmap.   Diff the two files with the code diff tool to see the differences.
 
 ```
-code -d roar-complete.yaml.configmap roar-complete roar-complete.yaml
+code -d roar-complete.yaml.configmap roar-complete.yaml
 ```
 
 9.  Now we’ll update our roar-complete.yaml file with the needed changes. To save trying to get the yaml all correct in a regular editor, we’ll just use the diff tool’s merging ability. In the diff window, between the two files, click the arrow that points right to replace the code in our roar-complete.yaml file with the new code from the roar-complete.yaml.configmap file.  (In the figure below, this is the arrow that is circled and labelled "1".) After that, the files should be identical and you can close the diff window (circled "2" in the figure below).
@@ -377,8 +377,9 @@ kubectl apply -f roar-complete.yaml
 **Lab 4 – Working with persistent storage – Kubernetes Persistent Volumes and Persistent Volume Claims**
 **Purpose: In this lab, we’ll see how to connect pods with external storage resources via persistent volumes and persistent volume claims.**
 
-1.	While we can modify the containers in pods running in the Kubernetes namespaces, we need to be able to persist data outside of them.  This is because we don’t want the data to go away when something happens to the pod.   Let’s take a quick look at how volatile data is when just stored in the pod.  If you don't already have a browser session open browser with the instance that you’re running in the “roar” namespace, open it again. (Ref lab 2, steps 1-5, if you need to do this again.)
+1.	While we can modify the containers in pods running in the Kubernetes namespaces, we need to be able to persist data outside of them.  This is because we don’t want the data to go away when something happens to the pod.   Let’s take a quick look at how volatile data is when just stored in the pod.  If you don't already have a browser session open browser with the instance of our sample app that you’re running in the “roar” namespace, open it again. You can do this by clicking on the Ports tab in your codespace lower section, selecting the line with the "kubectl port-forward" command, right-clicking and then opening in a broswer (see figure below). **After this, you will need to remember to add the "/roar" at the end of the URL.**
 
+![Port pop-up](./images/k8sdev8.png?raw=true "Port pop-up")
 
 2.	There is a very simple script in our roar-k8s directory that we can run to insert a record into the database in our mysql pod.  If you want, you can  take a look at the file update-db.sh to see what it’s doing. Run it, refresh the browser, and see if the additional record shows up.  (Make sure to pass in the namespace – “roar” and don’t forget to refresh the browser afterwards.)  You can ignore the warnings.
 
@@ -394,20 +395,15 @@ k delete pod -l app=roar-db
 
 4.	After a moment, a new mysql pod will be started up. When that happens, refresh the browser and notice that the record we added for “Woody Woodpecker” is no longer there.  It disappeared when the pod went away.  
 
-5.	This happened because the data was all contained within the pod’s filesystem. In order to make this work better, we need to define a persistent volume (PV) and persistent volume claim (PVC) for the deployment to use/mount that is outside of the pod.   As with other objects in Kubernetes, we first define the yaml that defines the PV and PVC.  The file storage.yaml defines these for us.  Take a look at it now. In the file explorer to the left,
- select the file [**roar-k8s/storage.yaml**](./roar-k8s/storage.yaml) 
+5.	This happened because the data was all contained within the pod’s filesystem. In order to make this work better, we need to define a persistent volume (PV) and persistent volume claim (PVC) for the deployment to use/mount that is outside of the pod.   As with other objects in Kubernetes, we first define the yaml that defines the PV and PVC.  The file [**roar-k8s/storage.yaml**](./roar-k8s/storage.yaml) defines these for us.  Take a look at it now. 
 
-```
-cat storage.yaml
-```
-
-6.	Now create the objects specified here.
+6.	Now create the objects specified here. After this runs, you should see notices that the persistent volume and claim were created.
 
 ```
 k apply -f storage.yaml
 ```
 
-7.	Now that we have the storage objects instantiated in the namespace, we need to update our spec to use the values from it.  In the file the change would be to add the lines in bold in the container’s spec area:
+7.	Now that we have the storage objects instantiated in the namespace, we need to update our spec to use the values from it.  In the file the change would be to add the lines in bold in the container’s spec area (you do not need to make changes for this step):
 
 ```
          spec:
@@ -428,23 +424,20 @@ volumeMounts:
             claimName: mysql-pv-claim
 ```
 
-8.	In the current directory, there’s already a “roar-complete.yaml.pv file with the changes in it for accessing the storage objects.   Diff the two files with the visual diff tool “meld” to see the differences.
+8.  In the current directory, there’s already a **roar-complete.yaml.pv** file with the changes in it for accessing the secret and the configmap.   Diff the two files with the code diff tool to see the differences.
 
 ```
-meld roar-complete.yaml roar-complete.yaml.pv 
+code -d roar-complete.yaml.pv roar-complete.yaml
 ```
 
-9.	Now we’ll update our roar-complete.yaml file with the needed changes. To save trying to get the yaml all correct in a regular editor, we’ll just use the meld tool’s merging ability.   In the meld window, on the right pane (the one with roar-complete.yaml.pv), click the arrow that points left to replace the code in our roar-complete.yaml file with the new code from the roar-complete.yaml.pv file.  (In the figure below, this is the arrow that is circled.)  
+9.  Now we’ll update our roar-complete.yaml file with the needed changes. To save trying to get the yaml all correct in a regular editor, we’ll just use the diff tool’s merging ability. In the diff window, between the two files, click the arrow that points right to replace the code in our roar-complete.yaml file with the new code from the roar-complete.yaml.pv file.  (In the figure below, this is the arrow that is circled and labelled "1".) After that, the files should be identical and you can close the diff window (circled "2" in the figure below).
 
-(NOTE: Ignore any other changes)
+![Diff and merge in code](./images/k8sdev8.png?raw=true "Diffing and merging for storage")
 
-
-10.	You should then see messages pop up that the files are identical.  Click on the Save button at the top to save the changes.  Then you can close the meld application. 
-
-11.	 Apply the new version of the yaml file to make sure it is syntactically correct.
+10.	 Apply the new version of the yaml file to make sure it is syntactically correct.
 
 ```
-kubectl apply -f roar-complete.yaml
+k apply -f roar-complete.yaml
 ```
 
 12.	Force a refresh in the running instance of the app in the browser.  Look at the local area for the mount.  You should see data from mysql.
