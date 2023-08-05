@@ -182,31 +182,31 @@ The complete URL should look something like
 ```console
 https://gwstudent-cautious-space-goldfish-p7vpg5q55xx36944-8089.preview.app.github.dev/roar/
 ```
-5. You should see a page like below. Notice that while we have the web app showing, there is no data being displayed. This suggests that there is something wrong with being able to get data from the database.
+
+6. You should see a page like below. Notice that while we have the web app showing, there is no data being displayed. This suggests that there is something wrong with being able to get data from the database.
 
 ![Running app in K8s](./images/k8sdev6.png?raw=true "Running app in K8s")
 
 
-6. Go back to your original codespace terminal. Let's take a quick look at the logs for the current mysql pod to see if there's
+7. Go back to your original codespace terminal. Let's take a quick look at the logs for the current mysql pod to see if there's
 any issues showing there.
 
 ```
 k logs -l app=roar-db
 ```
 
-7. Things should look ok in the logs. Let's use exec to run a query from the
+8. Things should look ok in the logs. Let's use exec to run a query from the
 database. You'll need the pod name of the mysql pod name (which you can get
 from 'k get pods' and then copy just the NAME part for the mysql pod). Also
 use "kubectl" here, not the alias "k".
 
 ```
-kubectl get pods | grep mysql (to get the db pod's name)
+k get pods | grep mysql (to get the db pod's name)
 
-$ kubectl exec -it <mysql-pod-name> -- mysql
--uadmin -padmin -e 'select * from registry.agents'
+k exec -it <mysql-pod-name> -- mysql -uadmin -padmin -e 'select * from registry.agents'
 ```
 
-8. This should return a set of data. Since that works, let's move on to check the
+9. This should return a set of data. Since that works, let's move on to check the
 endpoints - to see if there are pods actually connected to the service. You
 can use the get endpoints command to do this.
 
@@ -214,14 +214,14 @@ can use the get endpoints command to do this.
 k get ep
 ```
 
-9. This shows no endpoints for the mysql service. Endpoints are connected
+10. This shows no endpoints for the mysql service. Endpoints are connected
 through matching labels. Let's see what labels the service is looking for.
 
 ```
 k get svc/mysql -o yaml | grep -A1 selector
 ```
 
-10.From this we can see that the service is looking to select pods to talk to that
+11.From this we can see that the service is looking to select pods to talk to that
 have a label of "name: roar-db". So let's see what labels the pod for the
 database has.
 
@@ -229,7 +229,7 @@ database has.
 k get pods --show-labels | grep mysql
 ```
 
-11. From the output here, we can see that the pod does not have the label
+12. From the output here, we can see that the pod does not have the label
 "name: roar-db" that the service is trying to use to select a pod to connect to.
 There are a couple of different ways to fix this, but the most simple may be
 just to update the label to be the one that is expected via the command
@@ -240,7 +240,7 @@ overwrite.
 k label pod -l name=mysql --overwrite name=roar-db
 ```
 
-12. After the command above is run, you should be able to get the list of
+13. After the command above is run, you should be able to get the list of
 endpoints again and see that there is a pod now matched to the mysql
 service. Then you can refresh your browser session and you should see
 data in the app as below.
