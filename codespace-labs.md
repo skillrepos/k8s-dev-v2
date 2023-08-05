@@ -182,7 +182,9 @@ The complete URL should look something like
 ```console
 https://gwstudent-cautious-space-goldfish-p7vpg5q55xx36944-8089.preview.app.github.dev/roar/
 ```
-![Running app in K8s](./images/advk8s5.png?raw=true "Running app in K8s")
+5. You should see a page like below. Notice that while we have the web app showing, there is no data being displayed. This suggests that there is something wrong with being able to get data from the database.
+
+![Running app in K8s](./images/k8sdev6.png?raw=true "Running app in K8s")
 
 
 6. Go back to your original codespace terminal. Let's take a quick look at the logs for the current mysql pod to see if there's
@@ -248,6 +250,8 @@ k get ep
 ```
 
 After refresh…
+
+![Running app in K8s](./images/advk8s5.png?raw=true "Running app in K8s")
 
 <p align="center">
 **[END OF LAB]**
