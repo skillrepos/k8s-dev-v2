@@ -66,7 +66,7 @@ easier. First, let's set the default namespace to be 'roar' instead of 'default'
 don't have to pass "-n roar" all of the time.
 
 ```
-k config set-context --current -namespace=roar
+k config set-context --current --namespace=roar
 ```
 
 6. Now let's get a list of the pods that shows their labels so we can access them by
@@ -172,17 +172,20 @@ to.
 k port-forward svc/roar-web :8089 &
 ```
 
-4. Take note of what host port the service port gets forwarded to (will be a very
-high number). In a browser on the host system, open up the web application
-at the url below.
+4.  You should see a pop-up in your codespace that informs that `(i) Your application running on port 8089 is available.` and gives you a button to click on to `Open in browser`.  Click on that button. (If you don't see the pop-up, you can also switch to the `PORTS` tab at the top of the terminal, select the row with `8089`, and right-click and select `View in browser`.)
 
-http://localhost:<port-from-above>/roar
+![Port pop-up](./images/advk8s6.png?raw=true "Port pop-up")
 
-5. You should see a page like below. Notice that while we have the web app
-showing, there is no data being displayed. This suggests that there is
-something wrong with being able to get data from the database.
+5.  What you should see in the browser is an application called **Apache Tomcat** running. Click at the end of the URL in the address bar and add the text `/roar/`.  Make sure to include the trailing slash.  Then hit enter and you should see the *roar* application running in the browser.
 
-6. Let's take a quick look at the logs for the current mysql pod to see if there's
+The complete URL should look something like
+```console
+https://gwstudent-cautious-space-goldfish-p7vpg5q55xx36944-8089.preview.app.github.dev/roar/
+```
+![Running app in K8s](./images/advk8s5.png?raw=true "Running app in K8s")
+
+
+6. Go back to your original codespace terminal. Let's take a quick look at the logs for the current mysql pod to see if there's
 any issues showing there.
 
 ```
