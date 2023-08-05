@@ -221,7 +221,7 @@ through matching labels. Let's see what labels the service is looking for.
 k get svc/mysql -o yaml | grep -A1 selector
 ```
 
-11.From this we can see that the service is looking to select pods to talk to that
+11. From this we can see that the service is looking to select pods to talk to that
 have a label of "name: roar-db". So let's see what labels the pod for the
 database has.
 
@@ -261,19 +261,14 @@ After refresh…
 
 **Purpose:  In this lab we’ll get some practice storing secure and insecure information in a way that is accessible to k8s but not stored in the usual deployment files.**
 
-1.	In preparation for the next few labs, remove the old roar-complete.yaml file that had the issues we temporarily fixed in labs 1 and 2 and then replace it with a version that has the issues fixed in the file.
+1.	In preparation for the next few labs, remove the old roar-complete.yaml file that had the issues we temporarily fixed in labs 1 and 2 and then replace it with a version that has the issues fixed in the file. (You should be in the k8s-dev-v2/roar-k8s directory still.)
 
 ```   
 rm roar-complete.yaml
 mv roar-complete.yaml.fixed roar-complete.yaml
 ```
 
-2.	Cat the roar-complete.yaml and look at the “env” block that starts at line 69. We really shouldn’t be exposing usernames and passwords in here. In the file explorer to the left,
- select the file [**roar-k8s/roar-complete.yaml.fixed**](./roar-k8s/roar-complete.yaml.fixed) 
-
-```     
-cat -n roar-complete.yaml
-```
+2.	In the file explorer to the left (or via the link), select the file [**roar-k8s/roar-complete.yaml**](./roar-k8s/roar-complete.yaml) and look at the "env" block that starts at line 69. We really shouldn't be exposing usernames and passwords in here.  
 
 3.	Let’s explore two ways of managing environment variables like this so they are not exposed - Kubernetes “secrets” and “configmaps”. First, we'll look at what a default secret does by running the base64 encoding step on our two passwords that we’ll put into a secret.  Run these commands (the first encodes our base password and the second encodes our root password ).   
 
@@ -292,27 +287,27 @@ echo -n 'root+1' | base64
 This should yield: 
   			       cm9vdCsx
             
-4.  Now we need to put those in the form of a secrets manifest (yaml file for Kubernetes).  For convenience, there is already a “mysqlsecret.yaml” file in the same directory with this information.  Take a quick look at it and then use the apply command to create the actual secret. In the file explorer to the left,
- select the file [**roar-k8s/mysql-secret.yaml**](./roar-k8s/mysql-secret.yaml) 
+4.  Now we need to put those in the form of a secrets manifest (yaml file for Kubernetes).  For convenience, there is already a “mysqlsecret.yaml” file in the same directory with this information.  Take a quick look at it via the link or selecting it in the file explorer to the left,
+ select the file [**roar-k8s/mysql-secret.yaml**](./roar-k8s/mysql-secret.yaml) Now use the apply command to create the actual secret.
 
 ```
-cat mysql-secret.yaml
-kubectl apply -f mysql-secret.yaml
+k apply -f mysql-secret.yaml
 ```
 
-6.  Now that we have the secret created in the namespace, we need to update our spec to use the values from it.  You don't need to make any changes in this step, but the change will look like this:
-       from:
-    
-```    
+5.  Now that we have the secret created in the namespace, we need to update our spec to use the values from it.  You don't need to make any changes in this step, but the change will look like this:
+       
+```
+FROM:  
 - name: MYSQL_PASSWORD
       value: admin
     - name: MYSQL_ROOT_PASSWORD
       value: root+1
 ```
 
-   to:
+   
 
 ```   
+TO:
 - name: MYSQL_PASSWORD
   valueFrom:
     secretKeyRef:
@@ -325,25 +320,24 @@ kubectl apply -f mysql-secret.yaml
        key: mysqlrootpassword
 ```
 
-6.  We also have the MYSQL_DATABASE and MYSQL_USER values that we probably shouldn’t expose in here.   Since these are not sensitive data, let’s put these into a Kubernetes ConfigMap and update the spec to use that.  For convenience, there is already a “mysql-configmap.yaml” file in the same directory with this information.  Take a quick look at it and then use the apply command to create the actual secret. In the file explorer to the left,
- select the file [**roar-k8s/mysql-configmap.yaml**](./roar-k8s/mysql-configmap.yaml) 
+6.  We also have the MYSQL_DATABASE and MYSQL_USER values that we probably shouldn’t expose in here.   Since these are not sensitive data, let’s put these into a Kubernetes ConfigMap and update the spec to use that.  For convenience, there is already a “mysql-configmap.yaml” file in the same directory with this information.  Take a quick look at it [**roar-k8s/mysql-configmap.yaml**](./roar-k8s/mysql-configmap.yaml) and then use the apply command to create the actual secret. 
 
 ```
-cat mysql-configmap.yaml
 k apply -f mysql-configmap.yaml
 ```
 
 7.  Like the changes to use the secret, we would need to change the main yaml file to use the new configmap.  Again, you don't need to make any changes in this step, but that change would look like this:
-      from:
-    
-```    
+        
+```
+FROM:   
 -	name: MYSQL_DATABASE
          value: registry
 ```
 
-to
+   
 
 ```
+TO:
     - name: MYSQL_DATABASE
          valueFrom:
            configMapKeyRef:
@@ -360,22 +354,17 @@ to
                key: mysql.user
 ```
 
-9.  In the current directory, there’s already a “roar-complete.yaml.configmap file with the changes in it for accessing the secret and the configmap.   Diff the two files with the visual diff tool “meld” (or whatever diff tool you have installed) to see the differences.
+8.  In the current directory, there’s already a **roar-complete.yaml.configmap** file with the changes in it for accessing the secret and the configmap.   Diff the two files with the code diff tool to see the differences.
 
 ```
-meld roar-complete.yaml roar-complete.yaml.configmap 
+code -d roar-complete.yaml.configmap roar-complete roar-complete.yaml
 ```
 
-(You may need to stretch the meld window to be able to see the differences.)
+9.  Now we’ll update our roar-complete.yaml file with the needed changes. To save trying to get the yaml all correct in a regular editor, we’ll just use the diff tool’s merging ability. In the diff window, between the two files, click the arrow that points right to replace the code in our roar-complete.yaml file with the new code from the roar-complete.yaml.configmap file.  (In the figure below, this is the arrow that is circled and labelled "1".) After that, the files should be identical and you can close the diff window (circled "2" in the figure below).
 
-10.  Now we’ll update our roar-complete.yaml file with the needed changes. To save trying to get the yaml all correct in a regular editor, we’ll just use the meld tool’s merging ability.   
-In the meld window, on the right pane (the one with roar-complete.yaml.configmap), click the arrow that points left to replace the code in our roar-complete.yaml file with the new code from the roar-complete.yaml.configmap file.  (In the figure below, this is the arrow that is circled.)  
+![Diff and merge in code](./images/k8sdev7.png?raw=true "Diffing and merging for secrets and configmaps")
 
-
-11. You should then see messages pop up that the files are identical.  Click on the Save button at the top to save the changes.  Then you can close the meld application. 
-
-
-12.  Apply the new version of the yaml file to make sure it is syntactically correct.
+10.  Apply the new version of the yaml file to make sure it is syntactically correct.
 
 ```
 kubectl apply -f roar-complete.yaml
