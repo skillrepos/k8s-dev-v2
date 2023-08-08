@@ -479,25 +479,28 @@ k config set-context --current --namespace=default
 
 2.	In the manifests subdir, we have the “regular” Kubernetes manifests for our app, with the database pieces in a sub area under the web app pieces.  Then in the helm  subdir, we have a similar structure with the charts for the two apps.  
 
-To get a better idea of how Helm structures content, do a diff of the two areas.  If you are running in the VM, or have meld installed, you can use it and you will see a picture similar to below.  Otherwise, you can use any suitable diffing tool.  
+To get a better idea of how Helm structures content, do a diff of the two areas. Do one of the tree commands in one terminal and the other in the second terminal.
 
 ```
 cd ~/k8s-dev 
 
-meld manifests helm
+tree manifests (in one terminal)
+tree helm (in second terminal)
 ``` 
+![tree diff of two folders](./images/k8sdev12.png?raw=true "Tree diff of manifests and helm folders")
 
 3.	Notice the format of the two area is similar, but the helm one is organized as chart structures.
 
-Let’s take a closer look at the differences between a regular K8s manifest and one for Helm.  We’ll use the deployment one from the web app. Again, you can use meld or a suitable diffing/comparison tool.  Notice the differences in the two formats, particularly the placeholders in the Helm chart (with the {{ }} pairs instead of the hard-coded values.
+Let’s take a closer look at the differences between a regular K8s manifest and one for Helm.  We’ll use the deployment one from the web app.  Notice the differences in the two formats, particularly the placeholders in the Helm chart (with the {{ }} pairs instead of the hard-coded values.
 
 ```
-meld manifests/roar-web/deployment.yaml helm/roar-web/templates/deployment.yaml
+code -d  manifests/roar-web/deployment.yaml helm/roar-web/templates/deployment.yaml
 ```
- 
-4.	We are not making any changes here, so go ahead and close meld (or any other diff tool you’re using) when you’re done looking at the differences.  We've already seen how to deploy the standard Kubernetes manifests and how to look at the app running in the browser. Now let’s install the helm release to see how those are deployed.  
+![diff of regular and helm deployment manifests](./images/k8sdev13.png?raw=true "Diff of regular and helm deployment manifests")
 
-5.	Now let's install the helm release.
+4.	We are not making any changes here, so go ahead and close the diff tab when you’re done looking at the differences.  We've already seen how to deploy the standard Kubernetes manifests and how to look at the app running in the browser. Now let’s install the helm release to see how those are deployed.  
+
+5.	Install the helm release.
 
 ```
 helm install roar-helm helm/roar-web
@@ -559,11 +562,9 @@ k get svc -n roar-helm
 k port-forward -n roar-helm svc/roar-web <nodeport-from-step-9>:8089 &
 ```
 
-11.	 Now you can  open up a browser session to the url below and see the running application from the roar-helm namespace.
+11.	 Now you can  open up a browser session as you did before (don't forget to add "roar" at the end) and see the running application from the roar-helm namespace.
 
-```
-http://localhost:<nodeport-value-from-step-9>/roar
-```
+
 
 <p align="center">
 **[END OF LAB]**
@@ -575,19 +576,19 @@ http://localhost:<nodeport-value-from-step-9>/roar
 1.	Take a look at the deployment template in the roar-helm directory and notice what the "image" value is set to. In the file explorer to the left, select the file [**helm/charts/roar-db/templates/deployment.yaml**](./helm/charts/roar-db/templates/deployment.yaml) 
 
 ```   
-cd ../helm/roar-web
+cd helm/roar-web
 
 grep image charts/roar-db/templates/deployment.yaml
 ``` 
 
 Notice that the value for image is hardcoded to "quay.io/techupskills/roar-db:v2".
 
-3.	We are going to change this to use the Helm templating facility.  This means we'll change this value in the deployment.yaml file to have "placeholders".  And we will put the default values we want to have in the values.yaml file.  You can choose to edit the deployment file with the "gedit" editor if running in the VM or use another editor if not running in the VM.   Or you can use the "meld" tool if running in the VM (or a different merge tool if not running in the VM) to add the differences from a file that already has them.  If using the meld tool, select the right arrow to add the changes from the second file into the deployment.yaml file.  Then save the changes. In the file explorer to the left, select the file [**helm/charts/roar-db/templates/deployment.yaml**](./helm/charts/roar-db/templates/deployment.yaml) 
+3.	We are going to change this to use the Helm templating facility.  This means we'll change this value in the deployment.yaml file to have "placeholders".  And we will put the default values we want to have in the values.yaml file.  You can choose to edit the deployment file or you can use the "code -d" command i to add the differences from a file that already has them.  If using the code -d option, select the left arrow to add the changes from the second file into the deployment.yaml file.  Then save the changes. 
    
 Either do:
 
 ```
-gedit charts/roar-db/templates/deployment.yaml
+code charts/roar-db/templates/deployment.yaml
 ```
       And change 
 ```      
@@ -602,17 +603,19 @@ Save your changes and exit the editor.
 Or:
 
 ```
-$ meld charts/roar-db/templates/deployment.yaml ../extra/lab6-deployment.yaml
+code -d ../extra/lab6-deployment.yaml charts/roar-db/templates/deployment.yaml
 ```
  
-Then click on the arrow circled in red in the figure.  This will update the template file with the change.  Then Save your changes and exit meld.
+Then click on the arrow circled in red in the figure.  This will update the template file with the change.  Then close the diff tab.
+
+![merging template into manifest](./images/k8sdev14.png?raw=true "Merging template into manifest")
  
 5.	Now that we've updated the deployment template, we need to add default values.  We'll use the same approach as in the previous step to add defaults for the image.repository and image.tag values in the chart's values.yaml file. In the file explorer to the left, select the file [**helm/charts/roar-db/values.yaml**](./helm/charts/roar-db/values.yaml) 
 
 Either do:
 
 ```
-<editor> charts/roar-db/values.yaml
+code charts/roar-db/values.yaml
 ```
 
       And add to the top of the file: 
@@ -627,10 +630,12 @@ Either do:
 Or:
 
 ```
-meld charts/roar-db/values.yaml ../extra/lab6-values.yaml
+code -d ../extra/lab6-values.yaml charts/roar-db/values.yaml 
 ```
 
 Then click on the arrow circled in red in the figure.  This will update the values file with the change.  Then Save your changes and exit meld.
+
+![adding values into values.yaml](./images/k8sdev15.png?raw=true "Adding values into values.yaml")
  
 4.	Update the existing release.
 
@@ -644,44 +649,41 @@ helm upgrade -n roar-helm roar-helm .
 k get svc -n roar-helm
 ```   
 	      Look for the NodePort setting in the service output (should be a number > 30000 after "8089:")
-       
-6.	If you are not running in the VM, you may need to do a port-forward to be able to access the app on the local machine's browser.  That is, you would do 
-
-```
+```       
 k port-forward -n roar-helm service/roar-web <nodeport-value>:8089 &
 ```
 
-7.	Open up a browser and go to  http://localhost:<NodePort>/roar/ 
+6.	Open up a browser for the port as before.  Remember to add the "roar" at the end of the URL.
 You should see the same webapp and data as before.
 
-8.	Let's suppose we want to overwrite the image used here to be one that is for a test database. The image for the test database is on the quay.io hub at quay.io/bclaster/roar-db-test:v4 .
+7.	Let's suppose we want to overwrite the image used here to be one that is for a test database. The image for the test database is on the quay.io hub at quay.io/bclaster/roar-db-test:v4 .
 We could use a long command line string to set it and use the template command to show the proposed changes between the rendered files.  In the roar-web subdirectory, run the commands below to see the difference. (You should be in the ~/k8s-dev/helm/roar-web. Note the “.” In the commands.)
 
 ```
 helm template . --debug | grep image
 
-helm template . --debug  --set roar-db.image.repository=quay.io/bclaster/roar-db-test     --set roar-db.image.tag=v4  |  grep image
+helm template . --debug  --set roar-db.image.repository=quay.io/bclaster/roar-db-test --set roar-db.image.tag=v4  |  grep image
 ```
 
-9.	Now, in another terminal window , start a watch of the pods in your deployed helm release.  This is so that you can see the changes that will happen when we upgrade.  
+8.	Now, in another terminal window , start a watch of the pods in your deployed helm release.  This is so that you can see the changes that will happen when we upgrade.  
 
 ```
-k get pods -n roar-helm --watch
+kubectl get pods -n roar-helm --watch
 ```
 
-10.	Finally, let's do an upgrade using the new values file.  In a separate terminal window from the one where you did step 9, execute the following commands:
+9.	Finally, let's do an upgrade using the new values file.  In a separate terminal window from the one where you did step 9, execute the following commands:
 
 ```    
-cd ~/k8s-dev/helm/roar-web (if not already there)
+cd /workspaces/k8s-dev-v2/helm/roar-web (if not already there)
 
 helm upgrade -n roar-helm roar-helm . --set roar-db.image.repository=quay.io/bclaster/roar-db-test --set roar-db.image.tag=v4 --recreate-pods
 ```
 
 Ingore the warning. Watch the changes happening to the pods in the terminal window with the watch running.
 
-11.	Repeat steps 5 and 6 to get the nodeport and do the port-forward if you need to. Then go back to your browser and refresh it.  You should see a version of the (TEST) data in use now. (Depending on how quickly you refresh, you may need to refresh more than once.)
+10.	Repeat steps 5 and 6 to get the nodeport and do the port-forward.  Then go back to your browser and refresh it.  You should see a version of the (TEST) data in use now. (Depending on how quickly you refresh, you may need to refresh more than once.)
  
-12.	Go ahead and stop the watch from running in the window via Ctrl-C.
+11.	Go ahead and stop the watch from running in the window via Ctrl-C.
 
 ```
 Ctrl-C
@@ -700,21 +702,20 @@ Ctrl-C
 1.	Change to the base  subdirectory. In this directory, we have deployment and service manifests for a simple webapp that uses a MySQL database and a file to create a namespace.  You can see the files by running the recursive directory command (or tree if you have it installed).
 
 ```
-cd ../kz/base
+cd /workspaces/k8s-dev-v2/kz/base
 ls -R 
 ```
 
-2.	 Let's see what happens when we try to run "kustomize build" against these files. (On the VM, I have "kustomize" aliased as "kz".)  There will be an error.
+2.	 Let's see what happens when we try to run "kustomize build" against these files. (Here I have "kustomize" aliased as "kz".)  There will be an error.
 
 ```
 kz build (or kubectl kustomize)
 ```
 
-3.	Notice the error message about there not being a kustomization file.  Let's add one.  There's a basic one in the "extra" directory named "kustomization.yaml".  Copy it over into the directory.  Take a look at the contents to see what it does and then run the build command again, passing it to kubectl apply. In the file explorer to the left, select the file [**kz/base/kustomization.yaml**](./kz/base/kustomization.yaml) 
-
+3.	Notice the error message about there not being a kustomization file.  Let's add one.  There's a basic one in the "extra" directory named "kustomization.yaml".  Copy it over into the directory.  Take a look at the contents to see what it does and then run the build command again, passing it to kubectl apply. 
 ```
 cp ../extra/kustomization.yaml kustomization.yaml
-cat kustomization.yaml
+In the file explorer to the left, select the file [**kz/base/kustomization.yaml**](./kz/base/kustomization.yaml) 
 kz build | k apply -f -  (or kubectl apply -k .)
 ```
 
@@ -726,14 +727,17 @@ k get all
 
 5.	We have a namespace.yaml file in the directory.  Take a look at it. It is setup to create a namespace.  So how do we use it with Kustomize?  Since it's another resource, we just need to include it in our list of resources.  And then we also need to specify the namespace it creates ("roar-kz") in the kustomization file.  
 
-Edit the kustomization.yaml file and add the namespace line at the top (line 2) and add namespace.yaml at the end of the list of resources (line 11).  Save your changes and exit the editor when done.  (gedit is installed on the VM. You may use a different editor in place of <edit> if you want.) [**kz/base/namespace.yaml**](./kz/base/namespace.yaml) 
+Edit the kustomization.yaml file and add the namespace line at the top (line 2) and add namespace.yaml at the end of the list of resources (line 11).  Save your changes and exit the editor when done.  
 
 ```
-cat namespace.yaml
+In the file explorer to the left, select the file [**kz/base/namespace.yaml**](./kz/base/namespace.yaml) to review it.
 
-<edit> kustomization.yaml
+In the file explorer to the left, select the file [**kz/base/kustomization.yaml**](./kz/base/kustomization.yaml) to edit it. 
+
+Add the lines indicated in the kustomization.yaml file (see screenshot below).
+
 ```
-
+![adding namespace](./images/k8sdev16.png?raw=true "Adding namespace")
  
 6.	Now that we've added the namespace resource, let's try the kustomize build command again to see if our namespace "roar-original" shows up where expected.  You should see the manifest to create the namespace now included at the top of the output and the various resources having the namespace added.
 
@@ -752,15 +756,16 @@ k get all -n roar-kz
 8.	Let's make one more change here.  Let's apply a common annotation to our manifests.  Edit the kustomization file again and add the top 2 lines as shown in the screenshot.  When you are done, save your changes and exit the editor. [**kz/base/kustomization.yaml**](./kz/base/kustomization.yaml) 
 
 ```   
-<edit> kustomization.yaml
+Select the tab with [**kz/base/kustomization.yaml**](./kz/base/kustomization.yaml)
 ```
 	The 2 lines are:
  ```
 		commonAnnotations:
            version: base   
 ```                          
- 
-10.	Now you can run kustomize build and see the annotations. Afterwards you can go ahead and apply the changes.  Look for the added annotation to all the resources.
+ ![adding common annotation](./images/k8sdev17.png?raw=true "Adding common annotation")
+
+9.	Now you can run kustomize build and see the annotations. Afterwards you can go ahead and apply the changes.  Look for the added annotation to all the resources.
 
 ```     
 kz build | grep -a5 metadata
@@ -775,9 +780,7 @@ k get svc -n roar-kz | grep web
 ```    
 <find Nodeport - second to last column - value after 8089 - value in the 30000's>
 
-11.	 If you are not running in the VM, do a port-forward from the service as before.
-
-12.	Open http://localhost:<nodeport>/roar in browser
+Then do a port-forward and access the url as before.
 
 <p align="center">
 **[END OF LAB]**
@@ -789,7 +792,7 @@ k get svc -n roar-kz | grep web
 1.	To illustrate how variants work, we'll first create a directory for the overlays that will create our staging and production variants.  Change back to the kz directory and create the two directories.
 
 ```
-cd ~/k8s-dev/kz
+cd /workspaces/k8s-dev-v2/kz
 
 mkdir -p overlays/staging overlays/production
 ```
@@ -799,7 +802,7 @@ mkdir -p overlays/staging overlays/production
 ```
 cp extra/kustomization.yaml.variant overlays/staging/kustomization.yaml
 cp extra/kustomization.yaml.variant overlays/production/kustomization.yaml
-ls -R overlays (or ‘tree overlays’ if you have tree installed)
+tree overlays 
 
 overlays
 ├── production
@@ -811,13 +814,16 @@ overlays
 3.	We now have an overlay file that we can use with Kustomize.  Take a look at what's in it and then let's make sure we can build with it.
 
 ```   
-cat overlays/staging/kustomization.yaml 
+From the file list on the left, select [**kz/overlays/staging/kustomization.yaml**](./kz/overlays/staging/kustomization.yaml)
 kz build overlays/staging
 ```
 
-5.	What namespace will this deploy to if we apply it as is?  Look back up through the output from the previous step.  Notice that if we applied it as is, it would go to the roar-kz namespace. Let's use separate namespaces for the staging overlay and the production overlay.  To do that we'll just add the namespace transformer to the two new kustomization.yaml files. You can either edit the files and add the respective lines or just use the shortcut below.
-$ echo namespace: roar-staging >> overlays/staging/kustomization.yaml
-$ echo namespace: roar-production >> overlays/production/kustomization.yaml
+4.	What namespace will this deploy to if we apply it as is?  Look back up through the output from the previous step.  Notice that if we applied it as is, it would go to the roar-kz namespace. Let's use separate namespaces for the staging overlay and the production overlay.  To do that we'll just add the namespace transformer to the two new kustomization.yaml files. You can either edit the files and add the respective lines or just use the shortcut below.
+
+```
+echo namespace: roar-staging >> overlays/staging/kustomization.yaml
+echo namespace: roar-production >> overlays/production/kustomization.yaml
+```
 
 6.	Now you can do a kustomize build on each to verify it has the desired namespace in the output.  
 
@@ -843,14 +849,20 @@ kz build overlays/production | k apply -f -
 (There is also a "kustomization.yaml.test-image" file in the "extra" directory if you need a reference.)
 
 ```
-<edit> overlays/staging/kustomization.yaml
+code overlays/staging/kustomization.yaml
+```
+
+Add these lines:
+
+```
 images:
 - name: quay.io/techupskills/roar-db:v2
   newName: quay.io/bclaster/roar-db-test
   newTag: v4
 ``` 
+ ![adding image transformer](./images/k8sdev18.png?raw=true "Adding image transformer")
 
-8.	Save your changes, close the editor, and then apply the variant.  
+8.	Now apply the variant.  
 
 ```
 kz build overlays/staging | k apply -f -
@@ -862,10 +874,12 @@ kz build overlays/staging | k apply -f -
 k get svc -n roar-staging | grep web
 ```
 
-10.	If you are not running in the VM, do a port-forward from the service as before.
+10.	Do a port-forward from the service as before.
 
 
 11.	Refresh and see the test version of the data.
+
+ ![test data in app](./images/k8sdev19.png?raw=true "Test data in app")
 
 <p align="center">
 **[END OF LAB]**
