@@ -11,18 +11,8 @@ echo ...Installing Kubernetes dashboard
 echo
 # install dashboard
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.5.0/aio/deploy/recommended.yaml
-kubectl apply -f ~/k8s-dev/monitoring/dashboard-rbac.yaml
-echo
-echo ---- TOKEN to use for logging into dashboard follows ---
-echo 
-~/k8s-dev/monitoring/get-token.sh
-echo
-echo 
-echo --------------------------------------------------------
-echo
-echo --- Grafana initial password follows ---
-echo
-kubectl get secret --namespace monitoring monitoring-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
-echo
-echo ----------------------------------------
-echo
+kubectl apply -f /workspaces/k8s-dev-v2/monitoring/dashboard-rbac.yaml
+# install kustomize
+curl --silent --location --remote-name \"https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v3.5.4/kustomize_kustomize.v3.5.4_linux_amd64" 
+chmod a+x kustomize_kustomize.v3.5.4_linux_amd64 
+sudo mv kustomize_kustomize.v3.5.4_linux_amd64 /usr/local/bin/kustomize
