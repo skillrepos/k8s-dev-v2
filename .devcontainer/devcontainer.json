@@ -27,5 +27,5 @@
       ]
     }
   },
-  "postCreateCommand": "(minikube start && /workspaces/k8s-dev-v2/monitoring/setup-monitoring.sh) || echo 'Could not auto-configure. Skipping.' "
+  "postCreateCommand": "/workspaces/k8s-dev-v2/monitoring/install-kustomize.sh) || echo 'Could not install kustomize. Skipping.' "
 }
