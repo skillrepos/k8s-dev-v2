@@ -26,11 +26,9 @@ These steps **must** be completed prior to starting the actual labs.
 ## Start your single-node Kubernetes cluster
 2. There is a simple one-node Kubernetes instance called **minikube** available in your codespace. Start it the following way:
 
-    - Run the following commands in the codespace's terminal (**The second one will take several minutes to run...**):
+    - Run the following commands in the codespace's terminal (**This will take several minutes to run...**):
 
-      ```bash
-      alias k=kubectl
-      
+      ```
       minikube start
       ```
 
@@ -47,6 +45,14 @@ These steps **must** be completed prior to starting the actual labs.
     ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
 🌟  Enabled addons: storage-provisioner, default-storageclass
 🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+```
+
+## Set aliases
+3. Set up a couple of simple aliases for tooling
+
+```
+alias k=kubectl
+alias kz=kustomize
 ```
 
 ## Labs
