@@ -388,7 +388,7 @@ k delete pod -l app=roar-db
 k apply -f storage.yaml
 ```
 
-7.	Now that we have the storage objects instantiated in the namespace, we need to update our spec to use the values from it.  In the file the change would be to add the lines in bold in the container’s spec area (you do not need to make changes for this step):
+7.	Now that we have the storage objects instantiated in the namespace, we need to update our spec to use the values from it.  In the file the change would be to add the lines in bold in the container’s spec area (**you do not need to make changes for this step**):
 
 ```
          spec:
@@ -409,7 +409,7 @@ volumeMounts:
             claimName: mysql-pv-claim
 ```
 
-8.  In the current directory, there’s already a **roar-complete.yaml.pv** file with the changes in it for accessing the secret and the configmap.   Diff the two files with the code diff tool to see the differences.
+8.  In the current directory, there’s already a *roar-complete.yaml.pv* file with the changes in it for accessing the secret and the configmap.   Diff the two files with the code diff tool to see the differences.
 
 ```
 code -d roar-complete.yaml.pv roar-complete.yaml
@@ -417,7 +417,7 @@ code -d roar-complete.yaml.pv roar-complete.yaml
 
 9.  Now we’ll update our roar-complete.yaml file with the needed changes. To save trying to get the yaml all correct in a regular editor, we’ll just use the diff tool’s merging ability. In the diff window, between the two files, click the arrow that points right to replace the code in our roar-complete.yaml file with the new code from the roar-complete.yaml.pv file.  (In the figure below, this is the arrow that is circled and labelled "1".) After that, the files should be identical and you can close the diff window (circled "2" in the figure below).
 
-![Diff and merge in code](./images/k8sdev8.png?raw=true "Diffing and merging for storage")
+![Diff and merge in code](./images/k8sdev9.png?raw=true "Diffing and merging for storage")
 
 10.	 Apply the new version of the yaml file to make sure it is syntactically correct.
 
@@ -425,19 +425,7 @@ code -d roar-complete.yaml.pv roar-complete.yaml
 k apply -f roar-complete.yaml
 ```
 
-12.	Force a refresh in the running instance of the app in the browser.  Look at the local area for the mount.  You should see data from mysql.
-
-```
-ls -la /mnt/data
-```
-
-(If you don't see data, check to see if the most recent pod is running and ready.  If not, you may be hitting a resource issue with old replicasets. The command below can be used to get rid of obsolete replicasets.  
-
-```
-kubectl get rs | grep "0 " | cut -d' ' -f1 | xargs kubectl delete rs )
-```
-
-13.	 Add the extra record again into the database.
+11.	 Add the extra record again into the database.
 
 ```
 ./update-db.sh <namespace>
@@ -445,9 +433,11 @@ kubectl get rs | grep "0 " | cut -d' ' -f1 | xargs kubectl delete rs )
 
  (such as ./update-db.sh roar)
 
-14.	 Refresh the browser to force data to be written out the disk location.
+12.	 Refresh the browser to force data to be written out the disk location.
 
-15.	Repeat step 3 to kill off the current mysql pod.   After it is recreated,  refresh the screen and notice that the new record is still there!
+13.	Repeat step 3 to kill off the current mysql pod.
+    
+14.	After it is recreated,  refresh the screen and notice that the new record is still there!
 
 <p align="center">
 **[END OF LAB]**
