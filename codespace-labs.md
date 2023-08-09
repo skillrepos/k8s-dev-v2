@@ -564,25 +564,31 @@ k port-forward -n roar-helm svc/roar-web :8089 &
 1.	Take a look at the deployment template in the roar-helm directory and notice what the "image" value is set to. Open the file [**helm/roar-web/charts/roar-db/templates/deployment.yaml**](./helm/roar-web/charts/roar-db/templates/deployment.yaml) 
 
 ```   
+
 cd helm/roar-web
 
 grep image charts/roar-db/templates/deployment.yaml
+
 ``` 
 
 Notice that the value for image is hardcoded to "quay.io/techupskills/roar-db:v2".
 
-3.	We are going to change this to use the Helm templating facility.  This means we'll change this value in the deployment.yaml file to have "placeholders".  And we will put the default values we want to have in the values.yaml file.  You can choose to edit the deployment file or you can use the "code -d" command i to add the differences from a file that already has them.  If using the code -d option, select the left arrow to add the changes from the second file into the deployment.yaml file.  Then save the changes. 
+2.	We are going to change this to use the Helm templating facility.  This means we'll change this value in the deployment.yaml file to have "placeholders".  And we will put the default values we want to have in the values.yaml file.  You can choose to edit the deployment file or you can use the "code -d" command i to add the differences from a file that already has them.  If using the code -d option, select the left arrow to add the changes from the second file into the deployment.yaml file.  Then save the changes. 
    
 **Either do:**
 
 ```
 code charts/roar-db/templates/deployment.yaml
 ```
-      And change 
+
+And change 
+      
 ```      
             image: quay.io/techupskills/roar-db:v2
 ```
-      To
+
+To
+
 ```      
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
 ```
@@ -599,7 +605,7 @@ Then click on the arrow circled in red in the figure.  This will update the temp
 
 ![merging template into manifest](./images/k8sdev14.png?raw=true "Merging template into manifest")
  
-4.	Now that we've updated the deployment template, we need to add default values.  We'll use the same approach as in the previous step to add defaults for the image.repository and image.tag values in the chart's values.yaml file. In the file explorer to the left, select the file [**helm/roar-web/charts/roar-db/values.yaml**](./helm/roar-web/charts/roar-db/values.yaml) 
+3.	Now that we've updated the deployment template, we need to add default values.  We'll use the same approach as in the previous step to add defaults for the image.repository and image.tag values in the chart's values.yaml file. In the file explorer to the left, select the file [**helm/roar-web/charts/roar-db/values.yaml**](./helm/roar-web/charts/roar-db/values.yaml) 
 
 Either do:
 
@@ -607,7 +613,7 @@ Either do:
 code charts/roar-db/values.yaml
 ```
 
-      And add to the top of the file: 
+And add to the top of the file: 
 
 ```      
             image: 
@@ -615,7 +621,7 @@ code charts/roar-db/values.yaml
     tag: v2
 ```
 
-      Note that the first line should be all the way to the left and the remaining two lines are indented 2 spaces. Save your changes.
+Note that the first line should be all the way to the left and the remaining two lines are indented 2 spaces. Save your changes.
 Or:
 
 ```
@@ -626,15 +632,15 @@ Then click on the arrow circled in red in the figure.  This will update the valu
 
 ![adding values into values.yaml](./images/k8sdev15.png?raw=true "Adding values into values.yaml")
  
-5.	Update the existing release.
+4.	Update the existing release.
 
 ```   
 helm upgrade -n roar-helm roar-helm .
 ```
 
-6.	Look at the browser tab with the running application. Refresh the browser. You should see the same webapp and data after the upgrade as before.
+5.	Look at the browser tab with the running application. Refresh the browser. You should see the same webapp and data after the upgrade as before.
 
-7.	Let's suppose we want to overwrite the image used here to be one that is for a test database. The image for the test database is on the quay.io hub at *quay.io/bclaster/roar-db-test:v4* . We could use a long command line string to set it and use the template command to show the proposed changes between the rendered files.  In the roar-web subdirectory, run the commands below to see the difference. (You should be in the */workspaces/k8s-dev/helm/roar-web* directory. Note the “.” In the commands.)
+6.	Let's suppose we want to overwrite the image used here to be one that is for a test database. The image for the test database is on the quay.io hub at *quay.io/bclaster/roar-db-test:v4* . We could use a long command line string to set it and use the template command to show the proposed changes between the rendered files.  In the roar-web subdirectory, run the commands below to see the difference. (You should be in the */workspaces/k8s-dev/helm/roar-web* directory. Note the “.” In the commands.)
 
 ```
 helm template . --debug | grep image
@@ -642,31 +648,35 @@ helm template . --debug | grep image
 helm template . --debug  --set roar-db.image.repository=quay.io/bclaster/roar-db-test --set roar-db.image.tag=v4  |  grep image
 ```
 
-9.	Now, in another terminal window , start a watch of the pods in your deployed helm release.  This is so that you can see the changes that will happen when we upgrade.  
+7.	Now, in another terminal window , start a watch of the pods in your deployed helm release.  This is so that you can see the changes that will happen when we upgrade.  
 
 ```
+
 kubectl get pods -n roar-helm --watch
+
 ```
 
-10.	Finally, let's do an upgrade using the new values file.  In a separate terminal window from the one where you did step 9, execute the following commands:
+8.	Finally, let's do an upgrade using the new values file.  In a separate terminal window from the one where you did step 9, execute the following commands:
 
 ```    
+
 cd /workspaces/k8s-dev-v2/helm/roar-web (if not already there)
 
 helm upgrade -n roar-helm roar-helm . --set roar-db.image.repository=quay.io/bclaster/roar-db-test --set roar-db.image.tag=v4 --recreate-pods
+
 ```
 
 Ingore the warning. Watch the changes happening to the pods in the terminal window with the watch running.
 
-11.	Repeat steps 5 and 6 to get the nodeport and do the port-forward.  Then go back to your browser and refresh it.  You should see a version of the (TEST) data in use now. (Depending on how quickly you refresh, you may need to refresh more than once.)
+9.	Repeat steps 5 and 6 to get the nodeport and do the port-forward.  Then go back to your browser and refresh it.  You should see a version of the (TEST) data in use now. (Depending on how quickly you refresh, you may need to refresh more than once.)
  
-12.	Go ahead and stop the watch from running in the window via Ctrl-C.
+10.	Go ahead and stop the watch from running in the window via Ctrl-C.
 
 ```
 Ctrl-C
 ```
 
-13.	To save on system resources, delete the *roar-helm* namespace.
+11.	To save on system resources, delete the *roar-helm* namespace.
 
 ```
 k delete ns roar-helm
@@ -763,14 +773,7 @@ kz build | k apply -f -
 
 10.	The instance of our application should be running in the roar-kz namespace.  If you want to look at it, you can do a port forward as before and open it to look at it.
 
-11. 
-```
-k get svc -n roar-kz | grep web 
-```    
-
-Then do a port-forward and access the url as before.
-
-12.	To save on system resources, delete the *roar-kz* namespace.
+11.	To save on system resources, delete the *roar-kz* namespace.
 
 ```
 k delete ns roar-kz
@@ -894,71 +897,107 @@ k get svc -n roar-staging | grep web
 
 **Purpose:  This lab will introduce you to a few of the ways we can monitor what is happening in our Kubernetes cluster and objects.**
 
-1.	First, let’s look at the built-in Kubernetes dashboard. You should already have this installed from the setup.  (If not, there is a “setup-monitoring.sh” script in the “monitoring” directory that you can try.) You  can use a simple port-forward to access. Do this in a secondary terminal session.
+1.	In order to have the pieces setup for this lab, change to the *monitoring* directory, and run the script *setup-monitoring.sh*. This will take a bit to complete.
+
+```
+
+cd /workspaces/k8s-dev-v2/monitoring
+
+./setup-monitoring.sh
+
+```
+
+   
+2.	First, let’s look at the built-in Kubernetes dashboard. You  can use a simple port-forward to access but then we will need to make one tweak for the port. First do the port forward.
 
 ```
 k port-forward -n kubernetes-dashboard svc/kubernetes-dashboard :443 &
 ```
 
-2.	Take the port you get back from the command above - the one after "127.0.0.1"  and open up a browser to: (If you get a warning, just click on “Advanced” and then “Accept the Risk and Continue”)
+3.	If you look at this in the browser, it will have an error. To fix this, go to the PORTS tab, right-click on the line with "kubernetes-dashboard" in it, click "Change Port Protocol" from the popup menu and then select "HTTPS" from the options. Refresh the browser and you should be able to see the application.
 
-```
-https://localhost:<port>
-```
+![changing port protocol](./images/k8sdev21.png?raw=true "Changing the Port Protocol")
 
-3.	In the browser, you'll see a login screen.  We'll use the token option to get in. You may already have the token from the setup. If not, in the k8s-dev/monitoring directory is a script to generate the token.  Run the script and then copy the output.
+4.	In the browser, you'll see a login screen.  We'll use the token option to get in. In the *k8s-dev/monitoring* directory is a script to generate the token.  Run the script and then copy the output.
 
 ```
 ./get-token.sh
 ```
 
-4.	At the login screen, select "Token" as the access method, and paste the token you got from the step above.
+5.	At the login screen, select "Token" as the access method, and paste the token you got from the step above.
+
+![logging in to the dashboard](./images/k8sdev22.png?raw=true "Logging in to the dashboard")   
  
-5.	The dashboard for our cluster will now show.  You can choose K8s objects on the left and get a list of them, explore them, etc.
+6.	The dashboard for our cluster will now show.  You can select "All namespaces" at the top, choose K8s objects on the left, and explore.
+
+![working in the dashboard](./images/k8sdev21.png?raw=true "Working in the dashboard")
  
-6.	Now let’s look at some metrics gathering with a tool called Prometheus. You should already have these installed from the setup.  First, we will do a port-forward to access the Prometheus UI in our browser.
+7.	Now let’s look at some metrics gathering with a tool called Prometheus. First, we will do a port-forward to access the Prometheus UI in our browser.
 
 ```
-kubectl port-forward -n monitoring svc/monitoring-kube-prometheus-prometheus 9090:9090 &
+kubectl port-forward -n monitoring svc/monitoring-kube-prometheus-prometheus :9090 &
 ```
 
-7.	 Now, in a new browser tab, go to http://localhost:9090 . You should see a screen like the one below:
+8.	Open this in the browser via the port button. You should see a screen like the one below:
+
+![prometheus opening screen](./images/k8sdev23.png?raw=true "Prometheus opening screen")
  
-8.	Prometheus comes with a set of built-in metrics.  Just start typing in the “Expression” box.  For example, let’s look at one called “apiserver_request_total”.  Just start typing that in the Expression box. After you begin typing, you can select it in the list that pops up. After you have got it in the box, click on the blue “Execute” button.
+9.	Prometheus comes with a set of built-in metrics.  Just start typing in the “Expression” box.  For example, let’s look at one called “apiserver_request_total”.  Just start typing that in the Expression box. After you begin typing, you can select it in the list that pops up. After you have got it in the box, click on the blue “Execute” button.
 
-9.	Now, scroll down and look at the console output (assuming you have the Table tab selected).
+![prometheus metrics entry](./images/k8sdev24.png?raw=true "Prometheus metrics entry") 
 
-10.	Next, click on the blue “Graph” link next to “Console” and take a look at the graph of responses.  Note that you can hover over points on the graph to get more details. You can click "Execute" again to refresh.
+10.	Now, scroll down and look at the console output (assuming you have the Table tab selected).
+
+![prometheus console output](./images/k8sdev25.png?raw=true "Prometheus console output")
+
+11.	Next, click on the blue “Graph” link next to “Console” and take a look at the graph of responses.  Note that you can hover over points on the graph to get more details. You can click "Execute" again to refresh.
+
+![prometheus graph view](./images/k8sdev26.png?raw=true "Prometheus graph view")
  
-11.	You can also see the metrics being automatically exported for the node. If not running in the VM, do a port forward on the node-exporter service.
+12.	You can also see the metrics being automatically exported for the node. Do a port forward on the node-exporter service and then open via the port as usual.
 
 ```
-kubectl port-forward -n monitoring svc/monitoring-prometheus-node-exporter 9100:9100 &
-```
 
-12.	And then open up a browser to http://localhost:9100/metrics
+kubectl port-forward -n monitoring svc/monitoring-prometheus-node-exporter 9100 &
+
+```
 
 13.	 Now let’s change the query to show the rate of apiserver total requests over 1 minute intervals.  Go back to the main Prometheus screen.  In the query entry area, change the text to be what is below and then click on the Execute button to see the results in the graph.
 
 ```
+
 rate(apiserver_request_total[1m])
-```
-
-14.	Finally, let’s take a look at Grafana. First you need to get the default Grafana password. You should have that from the setup.  But if not, you can do that by running the ./get-grafana-initial-pw.sh command in the monitoring directory.
-
-
-15.	 Then you can do a port forward for the "monitoring-grafana" service.  You can pick a port or let it pick one.  In this case, I've used 8082.
 
 ```
-k port-forward -n monitoring svc/monitoring-grafana 8082:80  & 
+![prometheus rate query](./images/k8sdev27.png?raw=true "Prometheus rate query")
+
+14.	Finally, let’s take a look at Grafana. First you need to get the default Grafana password. You can get that by running the *./get-grafana-initial-pw.sh* script in the *monitoring* directory.
+
+15.	 Then you can do a port forward for the "monitoring-grafana" service.  
+
 ```
 
-16.	Open a browser to localhost:8082 (or whatever port you used). Login with username "admin" and the initial password.
+k port-forward -n monitoring svc/monitoring-grafana :80  & 
+
+```
+
+16.	Go to the browser tab. Login with username *admin* and the initial password.
+
+![grafana login](./images/k8sdev28.png?raw=true "Grafana login")
+
 
 17.	  Click on the magnifying glass for "search” (left red circle in figure below). This will provide you with a list of built-in graphs you can click on as demos and explore.
+
+![grafana search](./images/k8sdev29.png?raw=true "Grafana search")  
  
 18.	 Click on one of the links to view one of the demo graphs (such as the "Kubernetes / API server" one) shown in the figure below). You can then explore others by discarding/saving this one and going back to the list and selecting others.
 
+![grafana demo graph](./images/k8sdev29.png?raw=true "Grafana demo graph") 
+
 <p align="center">
 **[END OF LAB]**
+</p>
+
+<p align="center">
+(c) 2023 Brent Laster and Tech Skills Transformations
 </p>
