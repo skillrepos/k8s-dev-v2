@@ -1,13 +1,13 @@
 # Kubernetes for Devs
 ## An introduction to Kubernetes for Developers
 ## Session labs for codespace only
-## Revision 2.1 - 08/04/23
+## Revision 3.0 - 08/08/23
 
-**Startup**
+**Startup IF NOT ALREADY DONE!**
 ```
 alias k=kubectl
+alias kz=kustomize
 minikube start
-cd roar-k8s
 ```
 
 **Lab 1- Exploring and Deploying into Kubernetes**
@@ -23,8 +23,7 @@ we want to create. These can be separate files, or they can be combined. For
 our project, there is a combined one (deployments and services for both the web
 and db pieces) already setup for you in the k8s-dev/roar-k8s directory. 
 
-Take a look at the yaml file there for the Kubernetes deployments and services. In the file explorer to the left,
- select the file [**roar-k8s/roar-complete.yaml**](./roar-k8s/roar-complete.yaml) 
+Take a look at the yaml file there for the Kubernetes deployments and services. Click on the link: [**roar-k8s/roar-complete.yaml**](./roar-k8s/roar-complete.yaml) 
  
  See if you can identify the different services and deployments in the file.
 
@@ -48,10 +47,10 @@ new namespace.)
 k -n roar apply -f roar-complete.yaml
 ```
 After you run these commands, you should see output like the following:
-  *deployment.extensions/roar-web created*
-  *service/roar-web created*
-  *deployment.extensions/mysql created*
-  *service/mysql created*
+* deployment.extensions/roar-web created*
+* service/roar-web created*
+* deployment.extensions/mysql created*
+* service/mysql created*
 
 4.  Now, let’s look at the pods currently running in our “roar” namespace.
 
@@ -83,6 +82,7 @@ k get pods --show-labels
 ```
 k logs -l app=roar-web
 ```
+
 8.The output here confirms what is wrong – notice the part on “trying and failing to
 pull image” or "image can't be pulled". We need to get more detail though - such
 as the exact image name. We could use a describe command, but there's a
@@ -95,8 +95,7 @@ k get events | grep web | grep image
 9. Notice that the output of the command from the step above gives us an image
 path and name: "quay.io/techupskills/roar-web:1.10.1".
 
-10. The problem is that we don't have an image with the tag "1.10.1". There's a typo
-- instead we have a "1.0.1" version.
+10. The problem is that we don't have an image with the tag "1.10.1". There's a typo - instead we have a "1.0.1" version.
 
  
 11. We can change the existing deployment to see if this fixes things. But first, let's
@@ -107,15 +106,13 @@ In the codespace, right-click and select the `Split Terminal` option. This will 
 
 ![Splitting the terminal](./images/k8sdev4.png?raw=true "Splitting the terminal")
 
-12.  In the right terminal, run a command to start a `watch` of pods in the roar namespace.
+12.  In the right terminal, run a command to start a `watch` of pods in the roar namespace. The watch will continue running until we stop it.  ( Note you will need to add *alias k=kubectl* if you want it there. )
 
 ```
 kubectl get -n roar pods -w
 ```
-12. Back in the left terminal, do the following steps. 
 
-13. (Optional if you don't want to use VI ) Set your editor to a different one than the default one for text files if
-you want.
+13. Back in the left terminal, we will edit the deployment. Set your editor to our built-in one first.
 
 ```
 export EDITOR='code --wait'
@@ -127,16 +124,15 @@ export EDITOR='code --wait'
 k edit deploy/roar-web
 ```
 
-Change line 39 to use 1.0.1 instead of 1.10.1 in the file.  
-Save your changes and close the editor.
-If using the editor in the browser click on the X in the tab at the 
+15. Change line 39 to use 1.0.1 instead of 1.10.1 in the file.  
+Save your changes and close the editor by clicking on the X in the tab at the 
 top to save and close the file. 
 
 ![Editing the file](./images/k8sdev5.png?raw=true "Editing the file")
 
-15. Look back to the terminal session where you have the watch running. Eventually, you should
+16. Look back to the terminal session where you have the watch running. Eventually, you should
 see a new pod finished creating and start running. The previous web pod will
-be terminated and removed. Leave the watch running in the other session for the next lab.
+be terminated and removed. You can stop the watch command in that terminal via Ctrl-C. 
 
 <p align="center">
 **[END OF LAB]**
