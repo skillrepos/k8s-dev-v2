@@ -9,6 +9,7 @@ alias k=kubectl
 alias kz=kustomize
 minikube start
 ```
+**NOTE: To copy and paste in the codespace, you may need to use keyboard commands - CTRL-C and CTRL-V.**
 
 **Lab 1- Exploring and Deploying into Kubernetes**
 
@@ -44,8 +45,11 @@ command and the -f option to specify the file. (Note the -n option to specify ou
 new namespace.)
 
 ```
+cd roar-k8s
+
 k -n roar apply -f roar-complete.yaml
 ```
+
 After you run these commands, you should see output like the following:
 * deployment.extensions/roar-web created*
 * service/roar-web created*
@@ -97,14 +101,13 @@ path and name: "quay.io/techupskills/roar-web:1.10.1".
 
 10. The problem is that we don't have an image with the tag "1.10.1". There's a typo - instead we have a "1.0.1" version.
 
- 
 11. We can change the existing deployment to see if this fixes things. But first, let's
 setup a watch in a separate terminal so we can see how Kubernetes changes
 things when we make a change to the configuration. 
 
 In the codespace, right-click and select the `Split Terminal` option. This will add a second terminal side-by-side with your other one.
 
-![Splitting the terminal](./images/k8sdev4.png?raw=true "Splitting the terminal")
+![Splitting the terminal](./images/k8sdev4a.png?raw=true "Splitting the terminal")
 
 12.  In the right terminal, run a command to start a `watch` of pods in the roar namespace. The watch will continue running until we stop it.  ( Note you will need to add *alias k=kubectl* if you want it there. )
 
@@ -142,27 +145,17 @@ be terminated and removed. You can stop the watch command in that terminal via C
 
 **Purpose: In this lab, we'll explore some of the simple ways we can work with services and ports**
 
-1. Our app is now running as we can saw at the end of lab 1. Let's take a look
-at the services that we have.
+1. Our app is now running as we can saw at the end of lab 1. Let's take a look at the services that we have.
 
 ```
 k get svc
 ```
 
-2. The service for the webapp (roar-web) is the one we would access in the
-browser to see the application. But notice that it is of type ClusterIP. This
-type of service is intended for access within the cluster, meaning we can't
-access it directly. To access it, we need to forward the port to a port on the
-host machine. Find the port that the svc is using internally by looking under
-"PORT(S)" column in the output from step 1. Should be "8089".
+2. The service for the webapp (roar-web) is the one we would access in the browser to see the application. But notice that it is of type ClusterIP. This type of service is intended for access within the cluster, meaning we can't access it directly. To access it, we need to forward the port to a port on the host machine. Find the port that the svc is using internally by looking under "PORT(S)" column in the output from step 1. Should be "8089".
 
 
-3. We can forward this port to the host system with a "kubectl" command. In a
-different terminal session ( you can stop the watch in the other terminal with
-a Ctrl-C and use that one ), run the command below to forward the port from
-the service to a port on the host system. The " :" syntax will let Kubernetes
-find an unused port. Alternatively, we could supply a specific port to forward
-to.
+3. We can forward this port to the host system with a "kubectl" command. In the other different terminal session ( you can stop the watch in the other terminal with a Ctrl-C and use that one ), run the command below to forward the port from the service to a port on the host system. The " :" syntax will let Kubernetes
+find an unused port. Alternatively, we could supply a specific port to forward to.
 
 ```
 k port-forward svc/roar-web :8089 &
@@ -184,17 +177,13 @@ https://gwstudent-cautious-space-goldfish-p7vpg5q55xx36944-8089.preview.app.gith
 ![Running app in K8s](./images/k8sdev6.png?raw=true "Running app in K8s")
 
 
-7. Go back to your original codespace terminal. Let's take a quick look at the logs for the current mysql pod to see if there's
-any issues showing there.
+7. Go back to your original codespace terminal. Let's take a quick look at the logs for the current mysql pod to see if there's any issues showing there. (If you don't see a prompt, hit Enter.)
 
 ```
 k logs -l app=roar-db
 ```
 
-8. Things should look ok in the logs. Let's use exec to run a query from the
-database. You'll need the pod name of the mysql pod name (which you can get
-from 'k get pods' and then copy just the NAME part for the mysql pod). Also
-use "kubectl" here, not the alias "k".
+8. Things should look ok in the logs. Let's use exec to run a query from the database. You'll need the pod name of the mysql pod name (which you can get from 'k get pods' and then copy just the NAME part for the mysql pod). 
 
 ```
 k get pods | grep mysql (to get the db pod's name)
@@ -350,7 +339,7 @@ TO:
                key: mysql.user
 ```
 
-8.  In the current directory, there’s already a **roar-complete.yaml.configmap** file with the changes in it for accessing the secret and the configmap.   Diff the two files with the code diff tool to see the differences.
+8.  In the current directory, there’s already a *roar-complete.yaml.configmap* file with the changes in it for accessing the secret and the configmap.   Diff the two files with the code diff tool to see the differences.
 
 ```
 code -d roar-complete.yaml.configmap roar-complete.yaml
@@ -363,7 +352,7 @@ code -d roar-complete.yaml.configmap roar-complete.yaml
 10.  Apply the new version of the yaml file to make sure it is syntactically correct.
 
 ```
-kubectl apply -f roar-complete.yaml
+k apply -f roar-complete.yaml
 ```
 
 <p align="center">
