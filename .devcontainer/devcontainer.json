@@ -26,6 +26,5 @@
         "codespace-labs.md"
       ]
     }
-  },
-  "postCreateCommand": "/workspaces/k8s-dev-v2/extra/install-kustomize.sh) || echo 'Could not install kustomize. Skipping.' "
+  } 
 }
