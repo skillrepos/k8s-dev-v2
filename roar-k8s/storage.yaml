@@ -6,13 +6,12 @@ metadata:
   labels:
     type: local
 spec:
-  storageClassName: manual
   capacity:
     storage: 100M
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/mnt/data"
+    path: "/data/mysql-pv"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -21,7 +20,6 @@ metadata:
     app: mysql
   name: mysql-pv-claim
 spec:
-  storageClassName: manual
   accessModes:
   - ReadWriteOnce
   resources:
