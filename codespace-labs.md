@@ -1,7 +1,7 @@
 # Kubernetes for Devs
 ## An introduction to Kubernetes for Developers
 ## Session labs for codespace only
-## Revision 3.0 - 08/08/23
+## Revision 3.1 - 08/09/23
 
 **Startup IF NOT ALREADY DONE!**
 ```
@@ -670,7 +670,6 @@ helm upgrade -n roar-helm roar-helm . --set roar-db.image.repository=quay.io/bcl
 
 Ingore the warning. Watch the changes happening to the pods in the terminal window with the watch running.
 
-9.	Repeat steps 5 and 6 to get the nodeport and do the port-forward.  Then go back to your browser and refresh it.  You should see a version of the (TEST) data in use now. (Depending on how quickly you refresh, you may need to refresh more than once.)
  
 9.	Go ahead and stop the watch from running in the window via Ctrl-C.
 
@@ -691,6 +690,14 @@ Ctrl-C
 
 ```
 k delete ns roar-helm
+```
+
+12. 	In prep for the next lab, install *kustomize* by running the command below.
+
+```
+
+/workspaces/k8s-dev-v2/extra/install-kustomize.sh
+
 ```
 
 <p align="center">
