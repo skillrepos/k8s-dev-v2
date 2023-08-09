@@ -51,10 +51,10 @@ k -n roar apply -f roar-complete.yaml
 ```
 
 After you run these commands, you should see output like the following:
-* deployment.extensions/roar-web created*
-* service/roar-web created*
-* deployment.extensions/mysql created*
-* service/mysql created*
+* deployment.extensions/roar-web created
+* service/roar-web created
+* deployment.extensions/mysql created
+* service/mysql created
 
 4.  Now, let’s look at the pods currently running in our “roar” namespace.
 
@@ -66,14 +66,14 @@ Notice the STATUS field. What does the “ImagePullBackOff ” or
 
 5.  We need to investigate why this is happening. Let's do two things to make this
 easier. First, let's set the default namespace to be 'roar' instead of 'default' so we
-don't have to pass "-n roar" all of the time.
+don't have to pass *-n roar* all of the time.
 
 ```
 k config set-context --current --namespace=roar
 ```
 
 6. Now let's get a list of the pods that shows their labels so we can access them by
-the label instead of having to try to copy and paste the pod name.(Note we don't
+the label instead of having to try to copy and paste the pod name. (Note we don't
 have to supply the -n argument any longer.)
 
 
@@ -145,7 +145,7 @@ be terminated and removed. You can stop the watch command in that terminal via C
 
 **Purpose: In this lab, we'll explore some of the simple ways we can work with services and ports**
 
-1. Our app is now running as we can saw at the end of lab 1. Let's take a look at the services that we have.
+1. Our app should now be running per the changes made in lab 1. Let's take a look at the services that we have.
 
 ```
 k get svc
@@ -154,14 +154,13 @@ k get svc
 2. The service for the webapp (roar-web) is the one we would access in the browser to see the application. But notice that it is of type ClusterIP. This type of service is intended for access within the cluster, meaning we can't access it directly. To access it, we need to forward the port to a port on the host machine. Find the port that the svc is using internally by looking under "PORT(S)" column in the output from step 1. Should be "8089".
 
 
-3. We can forward this port to the host system with a "kubectl" command. In the other different terminal session ( you can stop the watch in the other terminal with a Ctrl-C and use that one ), run the command below to forward the port from the service to a port on the host system. The " :" syntax will let Kubernetes
-find an unused port. Alternatively, we could supply a specific port to forward to.
+3. We can forward this port to the host system with a "kubectl" command. In the second/right different terminal session, run the command below to forward the port from the service to a port on the host system. The " :" syntax will let Kubernetes find an unused port. Alternatively, we could supply a specific port to forward to.
 
 ```
 k port-forward svc/roar-web :8089 &
 ```
 
-4.  You should see a pop-up in your codespace that informs that `(i) Your application running on port 8089 is available.` and gives you a button to click on to `Open in browser`.  Click on that button. (If you don't see the pop-up, you can also switch to the `PORTS` tab at the top of the terminal, select the row with `8089`, and right-click and select `View in browser`.)
+4.  You should see a pop-up in your codespace that informs that `(i) Your application running on port <some number> is available.` and gives you a button to click on to `Open in browser`.  Click on that button. (If you don't see the pop-up, you can also switch to the `PORTS` tab at the top of the terminal, select the row with `8089`, and right-click and select `Open in browser`.)
 
 ![Port pop-up](./images/advk8s6.png?raw=true "Port pop-up")
 
@@ -177,13 +176,13 @@ https://gwstudent-cautious-space-goldfish-p7vpg5q55xx36944-8089.preview.app.gith
 ![Running app in K8s](./images/k8sdev6.png?raw=true "Running app in K8s")
 
 
-7. Go back to your original codespace terminal. Let's take a quick look at the logs for the current mysql pod to see if there's any issues showing there. (If you don't see a prompt, hit Enter.)
+7. Go back to your original codespace terminal. Let's take a quick look at the logs for the current mysql pod to see if there's any issues showing there. 
 
 ```
 k logs -l app=roar-db
 ```
 
-8. Things should look ok in the logs. Let's use exec to run a query from the database. You'll need the pod name of the mysql pod name (which you can get from 'k get pods' and then copy just the NAME part for the mysql pod). 
+8. Things should look ok in the logs. Let's use exec to run a query from the database. You'll need the pod name of the mysql pod name (which you can get from 'k get pods' and then copy just the NAME part for the mysql pod). Note in the second command, that "-- mysql" not "--mysql".
 
 ```
 k get pods | grep mysql (to get the db pod's name)
@@ -227,14 +226,13 @@ k label pod -l name=mysql --overwrite name=roar-db
 
 13. After the command above is run, you should be able to get the list of
 endpoints again and see that there is a pod now matched to the mysql
-service. Then you can refresh your browser session and you should see
-data in the app as below.
+service. 
 
 ```
 k get ep
 ```
 
-After refresh…
+14. Then you can refresh your browser session and you should see data in the app as below. After refresh…
 
 ![Running app in K8s](./images/advk8s5.png?raw=true "Running app in K8s")
 
@@ -253,7 +251,7 @@ rm roar-complete.yaml
 mv roar-complete.yaml.fixed roar-complete.yaml
 ```
 
-2.	In the file explorer to the left (or via the link), select the file [**roar-k8s/roar-complete.yaml**](./roar-k8s/roar-complete.yaml) and look at the "env" block that starts at line 69. We really shouldn't be exposing usernames and passwords in here.  
+2.	In the file explorer to the left (or via the link), select the file [**roar-k8s/roar-complete.yaml**](./roar-k8s/roar-complete.yaml) and look at the "env" block that starts at line 68. We really shouldn't be exposing usernames and passwords in here.  
 
 3.	Let’s explore two ways of managing environment variables like this so they are not exposed - Kubernetes “secrets” and “configmaps”. First, we'll look at what a default secret does by running the base64 encoding step on our two passwords that we’ll put into a secret.  Run these commands (the first encodes our base password and the second encodes our root password ).   
 
@@ -362,7 +360,7 @@ k apply -f roar-complete.yaml
 **Lab 4 – Working with persistent storage – Kubernetes Persistent Volumes and Persistent Volume Claims**
 **Purpose: In this lab, we’ll see how to connect pods with external storage resources via persistent volumes and persistent volume claims.**
 
-1.	While we can modify the containers in pods running in the Kubernetes namespaces, we need to be able to persist data outside of them.  This is because we don’t want the data to go away when something happens to the pod.   Let’s take a quick look at how volatile data is when just stored in the pod.  If you don't already have a browser session open browser with the instance of our sample app that you’re running in the “roar” namespace, open it again. You can do this by clicking on the Ports tab in your codespace lower section, selecting the line with the "kubectl port-forward" command, right-clicking and then opening in a broswer (see figure below). **After this, you will need to remember to add the "/roar" at the end of the URL.**
+1.	While we can modify the containers in pods running in the Kubernetes namespaces, we need to be able to persist data outside of them.  This is because we don’t want the data to go away when something happens to the pod.   Let’s take a quick look at how volatile data is when just stored in the pod.  **If you don't already have a browser session open** with the instance of our sample app that you’re running in the “roar” namespace, open it again. You can do this by clicking on the Ports tab in your codespace lower section, selecting the line with the "kubectl port-forward" command, right-clicking and then opening in a broswer (see figure below). **After this, you will need to remember to add the "/roar" at the end of the URL.**
 
 ![Port pop-up](./images/k8sdev8.png?raw=true "Port pop-up")
 
@@ -372,7 +370,7 @@ k apply -f roar-complete.yaml
 ./update-db.sh <namespace> (such as ./update-db.sh roar)
 ```
 
-3.	After you refresh your browser, you should see a record for “Woody Woodpecker” in the table.   Now, what happens if we delete the mysql pod and let Kubernetes recreate it?   
+3.	Refresh the browser and you should see a record for “Woody Woodpecker” in the table. Now, what happens if we delete the mysql pod and let Kubernetes recreate it?   
 
 ```
 k delete pod -l app=roar-db
@@ -435,7 +433,11 @@ k apply -f roar-complete.yaml
 
 12.	 Refresh the browser to force data to be written out the disk location.
 
-13.	Repeat step 3 to kill off the current mysql pod.
+13.	Repeat the step to kill off the current mysql pod.
+
+```
+k delete pod -l app=roar-db
+```
     
 14.	After it is recreated,  refresh the screen and notice that the new record is still there!
 
@@ -479,7 +481,7 @@ tree helm
 
 3.	Notice the format of the two area is similar, but the helm one is organized as chart structures.
 
-Let’s take a closer look at the differences between a regular K8s manifest and one for Helm.  We’ll use the deployment one from the web app.  Notice the differences in the two formats, particularly the placeholders in the Helm chart (with the {{ }} pairs instead of the hard-coded values.
+Let’s take a closer look at the differences between a regular K8s manifest and one for Helm.  We’ll use the deployment one from the web app.  Notice the differences in the two formats, particularly the placeholders in the Helm chart (with the {{ }} pairs instead of the hard-coded values.  **We are not making any changes here.**
 
 ```
 code -d  manifests/roar-web/deployment.yaml helm/roar-web/templates/deployment.yaml
@@ -546,7 +548,7 @@ k get all -n roar-helm
 k get svc -n roar-helm
 ```
 
-10.	Do a port-forward command  to expose the port, like the following:
+10.	In the right/second terminal, do a port-forward command  to expose the port, like the following:
 
 ```
 k port-forward -n roar-helm svc/roar-web :8089 &
@@ -616,7 +618,7 @@ code charts/roar-db/values.yaml
 And add to the top of the file: 
 
 ```      
-            image: 
+  image: 
     repository: quay.io/techupskills/roar-db
     tag: v2
 ```
@@ -628,7 +630,7 @@ Or:
 code -d ../extra/lab6-values.yaml charts/roar-db/values.yaml 
 ```
 
-Then click on the arrow circled in red in the figure.  This will update the values file with the change.  Then Save your changes and exit meld.
+Then click on the arrow circled in red in the figure.  This will update the values file with the change.  Then you can close that diff tab.
 
 ![adding values into values.yaml](./images/k8sdev15.png?raw=true "Adding values into values.yaml")
  
@@ -648,7 +650,7 @@ helm template . --debug | grep image
 helm template . --debug  --set roar-db.image.repository=quay.io/bclaster/roar-db-test --set roar-db.image.tag=v4  |  grep image
 ```
 
-7.	Now, in another terminal window , start a watch of the pods in your deployed helm release.  This is so that you can see the changes that will happen when we upgrade.  
+7.	Now, in the other terminal window , start a watch of the pods in your deployed helm release.  This is so that you can see the changes that will happen when we upgrade.  
 
 ```
 
@@ -670,11 +672,20 @@ Ingore the warning. Watch the changes happening to the pods in the terminal wind
 
 9.	Repeat steps 5 and 6 to get the nodeport and do the port-forward.  Then go back to your browser and refresh it.  You should see a version of the (TEST) data in use now. (Depending on how quickly you refresh, you may need to refresh more than once.)
  
-10.	Go ahead and stop the watch from running in the window via Ctrl-C.
+9.	Go ahead and stop the watch from running in the window via Ctrl-C.
 
 ```
 Ctrl-C
 ```
+
+10.     Do the port forward again. Then go back to your browser and refresh it.  You should see a version of the (TEST) data in use now. (Depending on how quickly you refresh, you may need to refresh more than once.)
+
+```    
+
+ k port-forward -n roar-helm svc/roar-web :8089 &
+
+```
+![test values in database](./images/k8sdev31.png?raw=true "Test values in database")
 
 11.	To save on system resources, delete the *roar-helm* namespace.
 
