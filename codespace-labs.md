@@ -893,18 +893,15 @@ kz build overlays/staging | k apply -f -
 
 ```
 
-9.	You can now find the nodeport for the service from roar-staging.
+9.	You can now forward the port for the service from roar-staging.
 
 ```
 
-k get svc -n roar-staging | grep web
+k port-forward -n roar-staging svc/roar-web :8089
 
 ```
 
-10.	Do a port-forward from the service as before.
-
-
-11.	Refresh and see the test version of the data.
+10.	Refresh and see the test version of the data. (Don't forget to add "/roar" at the end.)
 
  ![test data in app](./images/k8sdev19.png?raw=true "Test data in app")
 
