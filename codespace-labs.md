@@ -905,6 +905,17 @@ k port-forward -n roar-staging svc/roar-web :8089
 
  ![test data in app](./images/k8sdev19.png?raw=true "Test data in app")
 
+
+11.	To save on system resources, delete the *roar-staging* and *roar-production* namespaces.
+
+```
+
+k delete ns roar-staging
+
+k delete ns roar-production
+
+```
+
 <p align="center">
 **[END OF LAB]**
 </p>
