@@ -1,7 +1,7 @@
 # Kubernetes for Devs
 ## An introduction to Kubernetes for Developers
 ## Session labs for codespace only
-## Revision 3.1 - 08/09/23
+## Revision 3.2 - 08/10/23
 
 **Startup IF NOT ALREADY DONE!**
 ```
@@ -802,6 +802,7 @@ k delete ns roar-kz
 </p>
 
 **Lab 8 -  Creating Variants**
+
 **Purpose:  In this lab, we’ll see how to create production and stage variants of our simple application.**
 
 1.	To illustrate how variants work, we'll first create a directory for the overlays that will create our staging and production variants.  Change back to the kz directory and create the two directories.
