@@ -943,7 +943,7 @@ k port-forward -n kubernetes-dashboard svc/kubernetes-dashboard :443 &
 
 3.	If you look at this in the browser, it will have an error. To fix this, go to the PORTS tab, right-click on the line with "kubernetes-dashboard" in it, click "Change Port Protocol" from the popup menu and then select "HTTPS" from the options. Refresh the browser and you should be able to see the application.
 
-![changing port protocol](./images/k8sdev21.png?raw=true "Changing the Port Protocol")
+![changing port protocol](./images/k8sdev20.png?raw=true "Changing the Port Protocol")
 
 4.	In the browser, you'll see a login screen.  We'll use the token option to get in. In the *k8s-dev/monitoring* directory is a script to generate the token.  Run the script and then copy the output.
 
