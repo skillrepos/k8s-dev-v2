@@ -675,18 +675,16 @@ helm upgrade -n roar-helm roar-helm . --set roar-db.image.repository=quay.io/bcl
 Ingore the warning. Watch the changes happening to the pods in the terminal window with the watch running.
 
  
-9.	Go ahead and stop the watch from running in the window via Ctrl-C.
+9.	Go ahead and stop the watch from running in the window via Ctrl+C.
 
 ```
-Ctrl-C
+Ctrl+C
 ```
 
 10.     Do the port forward again. Then go back to your browser and refresh it.  You should see a version of the (TEST) data in use now. (Depending on how quickly you refresh, you may need to refresh more than once.)
 
 ```    
-
  k port-forward -n roar-helm svc/roar-web :8089 &
-
 ```
 ![test values in database](./images/k8sdev31.png?raw=true "Test values in database")
 
