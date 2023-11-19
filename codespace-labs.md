@@ -657,19 +657,15 @@ helm template . --debug  --set roar-db.image.repository=quay.io/bclaster/roar-db
 7.	Now, in the other terminal window , start a watch of the pods in your deployed helm release.  This is so that you can see the changes that will happen when we upgrade.  
 
 ```
-
 kubectl get pods -n roar-helm --watch
-
 ```
 
 8.	Finally, let's do an upgrade using the new values file.  In a separate terminal window from the one where you did step 9, execute the following commands:
 
 ```    
-
 cd /workspaces/k8s-dev-v2/helm/roar-web (if not already there)
 
 helm upgrade -n roar-helm roar-helm . --set roar-db.image.repository=quay.io/bclaster/roar-db-test --set roar-db.image.tag=v4 --recreate-pods
-
 ```
 
 Ingore the warning. Watch the changes happening to the pods in the terminal window with the watch running.
@@ -677,13 +673,7 @@ Ingore the warning. Watch the changes happening to the pods in the terminal wind
  
 9.	Go ahead and stop the watch from running in the window via Ctrl+C.
 
-```
-Ctrl+C
-```
-
-
 10.     Do the port forward again. Then go back to your browser and refresh it.  You should see a version of the (TEST) data in use now. (Depending on how quickly you refresh, you may need to refresh more than once.)
-
 
 ```    
  k port-forward -n roar-helm svc/roar-web :8089 &
