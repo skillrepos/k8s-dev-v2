@@ -938,17 +938,17 @@ k port-forward -n kubernetes-dashboard svc/kubernetes-dashboard :443 &
 
 ![changing port protocol](./images/k8sdev20.png?raw=true "Changing the Port Protocol")
 
-4.	In the browser, you'll see a login screen.  We'll use the token option to get in. In the *k8s-dev/monitoring* directory is a script to generate the token.  Switch back to the 'TERMINAL' tab. Run the script below and then copy the output.
+4.	In the browser, you'll see a login screen.  We'll use the token option to get in. In the *k8s-dev/monitoring* directory is a script to generate the token.  Switch back to the 'TERMINAL' tab. Run the command below and then copy the output.
 
 ```
-./get-token.sh
+k -n kubernetes-dashboard create token admin-user
 ```
 
 5.	At the login screen, select "Token" as the access method, and paste the token you got from the step above.
 
 ![logging in to the dashboard](./images/k8sdev22.png?raw=true "Logging in to the dashboard")   
  
-6.	The dashboard for our cluster will now show.  You can select "All namespaces" at the top, choose K8s objects on the left, and explore.
+6.	The dashboard for our cluster will now show.  You can select "All namespaces" in the rectangular dropdown at the top, choose K8s objects on the left, and explore.
 
 ![working in the dashboard](./images/k8sdev21.png?raw=true "Working in the dashboard")
  
