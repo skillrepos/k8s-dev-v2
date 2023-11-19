@@ -686,12 +686,11 @@ Ingore the warning. Watch the changes happening to the pods in the terminal wind
 k delete ns roar-helm
 ```
 
-12. 	In prep for the next lab, install *kustomize* by running the command below.
+12. In prep for the next lab, install *kustomize* by running the commands below.
 
 ```
-
+chmod +x /workspaces/k8s-dev-v2/extra/install-kustomize.sh
 /workspaces/k8s-dev-v2/extra/install-kustomize.sh
-
 ```
 
 <p align="center">
