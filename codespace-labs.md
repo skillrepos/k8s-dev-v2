@@ -1,7 +1,7 @@
 # Kubernetes for Devs
 ## An introduction to Kubernetes for Developers
 ## Session labs for codespace only
-## Revision 3.2 - 08/10/23
+## Revision 3.3 - 11/19/23
 
 **Startup IF NOT ALREADY DONE!**
 ```
