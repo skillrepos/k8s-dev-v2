@@ -9,7 +9,7 @@ alias k=kubectl
 alias kz=kustomize
 minikube start
 ```
-**NOTE: To copy and paste in the codespace, you may need to use keyboard commands - CTRL-C and CTRL-V.**
+**NOTE: To copy and paste in the codespace using the mouse, you will need to hold down the 'Shift' key while you click 'Copy' or 'Paste'. Alternatively, you can use the keyboard commands - CTRL+C and CTRL+V.**
 
 **Lab 1- Exploring and Deploying into Kubernetes**
 
@@ -135,7 +135,7 @@ top to save and close the file.
 
 16. Look back to the terminal session where you have the watch running. Eventually, you should
 see a new pod finished creating and start running. The previous web pod will
-be terminated and removed. You can stop the watch command in that terminal via Ctrl-C. 
+be terminated and removed. You can stop the watch command in that terminal via Ctrl+C. 
 
 <p align="center">
 **[END OF LAB]**
@@ -938,7 +938,7 @@ k port-forward -n kubernetes-dashboard svc/kubernetes-dashboard :443 &
 
 ![changing port protocol](./images/k8sdev20.png?raw=true "Changing the Port Protocol")
 
-4.	In the browser, you'll see a login screen.  We'll use the token option to get in. In the *k8s-dev/monitoring* directory is a script to generate the token.  Run the script and then copy the output.
+4.	In the browser, you'll see a login screen.  We'll use the token option to get in. In the *k8s-dev/monitoring* directory is a script to generate the token.  Switch back to the 'TERMINAL' tab. Run the script below and then copy the output.
 
 ```
 ./get-token.sh
