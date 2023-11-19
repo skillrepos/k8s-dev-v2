@@ -689,8 +689,8 @@ k delete ns roar-helm
 12. In prep for the next lab, install *kustomize* by running the commands below.
 
 ```
-chmod +x /workspaces/k8s-dev-v2/extra/install-kustomize.sh
-/workspaces/k8s-dev-v2/extra/install-kustomize.sh
+curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+sudo mv kustomize /usr/local/bin/kustomize
 ```
 
 <p align="center">
