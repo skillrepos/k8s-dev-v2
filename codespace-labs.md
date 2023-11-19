@@ -358,6 +358,7 @@ k apply -f roar-complete.yaml
 </p>
 
 **Lab 4 – Working with persistent storage – Kubernetes Persistent Volumes and Persistent Volume Claims**
+
 **Purpose: In this lab, we’ll see how to connect pods with external storage resources via persistent volumes and persistent volume claims.**
 
 1.	While we can modify the containers in pods running in the Kubernetes namespaces, we need to be able to persist data outside of them.  This is because we don’t want the data to go away when something happens to the pod.   Let’s take a quick look at how volatile data is when just stored in the pod.  **If you don't already have a browser session open** with the instance of our sample app that you’re running in the “roar” namespace, open it again. You can do this by clicking on the Ports tab in your codespace lower section, selecting the line with the "kubectl port-forward" command, right-clicking and then opening in a broswer (see figure below). **After this, you will need to remember to add the "/roar" at the end of the URL.**
@@ -452,6 +453,7 @@ k delete ns roar
 </p>
 
 **Lab 5 – Working with Helm**
+
 **Purpose:  In this lab, we’ll compare a Helm chart against standard Kubernetes manifests and then deploy the Helm chart into Kubernetes**
 
 1.	For this lab, reset the default namespace.
@@ -554,13 +556,14 @@ k get svc -n roar-helm
 k port-forward -n roar-helm svc/roar-web :8089 &
 ```
 
-11.	 You should see the pop-up as before and you can click on the open butto to get to the tab as you did before.  As before, add "/roar" at the end) and you should be able to see the running application from the *roar-helm* namespace.
+11.	 You should see the pop-up as before and you can click on the open button to get to the tab as you did before.  As before, add "/roar" at the end) and you should be able to see the running application from the *roar-helm* namespace.
 
 <p align="center">
 **[END OF LAB]**
 </p>
 
 **Lab 6:  Templating with Helm**
+
 **Purpose: In this lab, you’ll get to see how we can change hard-coded values into templates, override values, and upgrade releases through Helm.**
 
 1.	Take a look at the deployment template in the roar-helm directory and notice what the "image" value is set to. Open the file [**helm/roar-web/charts/roar-db/templates/deployment.yaml**](./helm/roar-web/charts/roar-db/templates/deployment.yaml) 
