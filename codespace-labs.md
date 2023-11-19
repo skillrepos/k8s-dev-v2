@@ -627,7 +627,8 @@ And add to the top of the file:
 ```
 
 Note that the first line should be all the way to the left and the remaining two lines are indented 2 spaces. Save your changes.
-Or:
+
+**Or:**
 
 ```
 code -d ../extra/lab6-values.yaml charts/roar-db/values.yaml 
