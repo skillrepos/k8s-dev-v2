@@ -681,7 +681,9 @@ Ingore the warning. Watch the changes happening to the pods in the terminal wind
 Ctrl+C
 ```
 
+
 10.     Do the port forward again. Then go back to your browser and refresh it.  You should see a version of the (TEST) data in use now. (Depending on how quickly you refresh, you may need to refresh more than once.)
+
 
 ```    
  k port-forward -n roar-helm svc/roar-web :8089 &
