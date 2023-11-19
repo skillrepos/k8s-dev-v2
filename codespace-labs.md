@@ -974,7 +974,7 @@ kubectl port-forward -n monitoring svc/monitoring-kube-prometheus-prometheus :90
 
 ![prometheus graph view](./images/k8sdev26.png?raw=true "Prometheus graph view")
  
-12.	You can also see the metrics being automatically exported for the node. Do a port forward on the node-exporter service and then open via the port as usual and click on the 'Metrics' link.
+12.	You can also see the metrics being automatically exported for the node. Do a port forward on the node-exporter service and then open via the port as usual and click on the `Metrics` link.
 
 ```
 
