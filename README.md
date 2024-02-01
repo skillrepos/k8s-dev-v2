@@ -11,6 +11,8 @@ These steps **must** be completed prior to starting the actual labs.
 
 ![Forking repository](./images/k8sdev1.png?raw=true "Forking the repository")
 
+![Forking repository](./images/k8sdev32.png?raw=true "Forking the repository")
+
 ## Configure your codespace
 
 1. In your forked repository, start a new codespace.
