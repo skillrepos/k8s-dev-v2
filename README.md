@@ -59,7 +59,7 @@ alias kz=kustomize
 
 ## 5. Open Labs in Preview mode
 
-After the codespace has started, open the labs document by going to the file tree on the left, find the file named **codespace-labs.md**, right-click on it, and open it with the **Preview** option.)
+After the codespace has started, you can close the *Welcome* doc by clicking on the X in its tab. Then open the labs document by going to the file tree on the left, find the file named **codespace-labs.md**, right-click on it, and open it with the **Preview** option.)
 
 ![Labs doc preview in codespace](./images/k8sdev3.png?raw=true "Labs doc preview in codespace")
 
