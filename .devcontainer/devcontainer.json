@@ -20,11 +20,6 @@
       "extensions": [
         "ms-azuretools.vscode-docker"
       ]
-    },
-    "codespaces": {
-      "openFiles": [
-        "codespace-labs.md"
-      ]
     }
   } 
 }
