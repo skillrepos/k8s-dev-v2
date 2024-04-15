@@ -4,7 +4,7 @@ These instructions will guide you through configuring a GitHub Codespaces enviro
 
 These steps **must** be completed prior to starting the actual labs.
 
-## Create your own repository for these labs
+## 1. Create your own repository for these labs
 
 - Ensure that you have created a repository by forking the [skillrepos/k8s-dev-v2](https://github.com/skillrepos/k8s-dev-v2) project as a template into your own GitHub area.
 - You do this by clicking the `Fork` button in the upper right portion of the main project page and following the steps to create a copy in **your-github-userid/k8s-dev-v2** .
@@ -13,9 +13,9 @@ These steps **must** be completed prior to starting the actual labs.
 
 ![Forking repository](./images/k8sdev32.png?raw=true "Forking the repository")
 
-## Configure your codespace
+## 2. Configure your codespace
 
-1. In your forked repository, start a new codespace.
+In your forked repository, start a new codespace.
 
     - Click the `Code` button on your repository's landing page.
     - Click the `Codespaces` tab.
@@ -25,8 +25,8 @@ These steps **must** be completed prior to starting the actual labs.
 ![Starting codespace](./images/k8sdev2.png?raw=true "Starting your codespace")
 
 
-## Start your single-node Kubernetes cluster
-2. There is a simple one-node Kubernetes instance called **minikube** available in your codespace. Start it the following way:
+## 3. Start your single-node Kubernetes cluster
+There is a simple one-node Kubernetes instance called **minikube** available in your codespace. Start it the following way:
 
     - Run the following commands in the codespace's terminal (**This will take several minutes to run...**):
 
@@ -49,15 +49,15 @@ These steps **must** be completed prior to starting the actual labs.
 🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
 ```
 
-## Set aliases
-3. Set up a couple of simple aliases for tooling
+## 4. Set aliases
+Set up a couple of simple aliases for tooling
 
 ```
 alias k=kubectl
 alias kz=kustomize
 ```
 
-## Labs
+## 5. Open Labs in Preview mode
 
 After the codespace has started, open the labs document by going to the file tree on the left, find the file named **codespace-labs.md**, right-click on it, and open it with the **Preview** option.)
 
@@ -68,7 +68,7 @@ Any command in the gray boxes is either code intended to be run in the console o
 
 Labs doc: [Kubernetes for Developers Deep Dive Labs](codespace-labs.md)
 
-## Set codespace timeout (optional but recommended)
+## 6. Set codespace timeout (optional but recommended)
 
 While logged in to GitHub, go to https://github.com/settings/codespaces.
 
@@ -76,5 +76,5 @@ Scroll down and find the section on the page labeled *Default idle timeout*.
 
 Increase the default timeout value to 90 minutes and then select the *Save* button.
 
-![Increasing default timeout](./images/k8sdev1.png?raw=true "Increasing default timeout")
+![Increasing default timeout](./images/k8sdev33.png?raw=true "Increasing default timeout")
 
