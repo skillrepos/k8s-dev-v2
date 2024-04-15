@@ -68,3 +68,13 @@ Any command in the gray boxes is either code intended to be run in the console o
 
 Labs doc: [Kubernetes for Developers Deep Dive Labs](codespace-labs.md)
 
+## Set codespace timeout (optional but recommended)
+
+While logged in to GitHub, go to https://github.com/settings/codespaces.
+
+Scroll down and find the section on the page labeled *Default idle timeout*. 
+
+Increase the default timeout value to 90 minutes and then select the *Save* button.
+
+![Increasing default timeout](./images/k8sdev1.png?raw=true "Increasing default timeout")
+
