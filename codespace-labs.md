@@ -830,10 +830,4 @@ https://grafana.com/grafana/dashboards/1860
 (c) 2024 Brent Laster and Tech Skills Transformations
 </p>
 
-<p align="center">
-**[END OF LAB]**
-</p>
 
-<p align="center">
-(c) 2023 Brent Laster and Tech Skills Transformations
-</p>
