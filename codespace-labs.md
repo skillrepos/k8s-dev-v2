@@ -811,14 +811,15 @@ k port-forward -n monitoring svc/monitoring-grafana :80  &
 https://grafana.com/grafana/dashboards/1860
 
 ``` 
-    
+![dashboard import](./images/k8sdev35.png?raw=true "Grafana dashboard import") 
+
 21. On the next page, you can leave everything as-is, except at the bottom for the Prometheus source, click in that box and select our default Prometheus data source that we setup. Then click the blue **Import** button at the bottom.
  
- ![data source](./images/promstart35.png?raw=true "data source")
+ ![data source](./images/k8sdev36.png?raw=true "data source")
 
 22. At this point, you should see a populated dashboard with a number of panels looking at the Kubernetes node data from our system through Prometheus.  You can scroll around and explore.
  
- ![new dashboard](./images/promstart36.png?raw=true "new dashboard")
+ ![new dashboard](./images/k8sdev37.png?raw=true "new dashboard")
 
 
 <p align="center">
