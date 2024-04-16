@@ -1,7 +1,7 @@
 # Kubernetes for Devs
 ## An introduction to Kubernetes for Developers
 ## Session labs for codespace only
-## Revision 3.3 - 11/19/23
+## Revision 3.4 - 04/16/24
 
 **Startup IF NOT ALREADY DONE!**
 ```
@@ -797,6 +797,37 @@ k port-forward -n monitoring svc/monitoring-grafana :80  &
 18.	 Click on one of the links to view one of the demo graphs (such as the "Kubernetes / API server" one) shown in the figure below). You can then explore others by discarding/saving this one and going back to the list and selecting others.
 
 ![grafana demo graph](./images/k8sdev29.png?raw=true "Grafana demo graph") 
+
+**OPTIONAL**
+
+19. Another easy way to get charts in Grafana is to import ready-made ones. Let's try this with a Node Exporter chart. First, click back on the dashboard icon (4 boxes icon on the left) and then click the blue *Import* button at the far right.
+
+![dashboard import](./images/k8sdev34.png?raw=true "Grafana dashboard import") 
+
+20. In the box under *Import via grafana.com*, enter the following URL to import a ready-made chart and then click the **Load** button.
+
+```
+
+https://grafana.com/grafana/dashboards/1860
+
+``` 
+    
+21. On the next page, you can leave everything as-is, except at the bottom for the Prometheus source, click in that box and select our default Prometheus data source that we setup. Then click the blue **Import** button at the bottom.
+ 
+ ![data source](./images/promstart35.png?raw=true "data source")
+
+22. At this point, you should see a populated dashboard with a number of panels looking at the Kubernetes node data from our system through Prometheus.  You can scroll around and explore.
+ 
+ ![new dashboard](./images/promstart36.png?raw=true "new dashboard")
+
+
+<p align="center">
+**[END OF LAB]**
+</p>
+
+<p align="center">
+(c) 2024 Brent Laster and Tech Skills Transformations
+</p>
 
 <p align="center">
 **[END OF LAB]**
