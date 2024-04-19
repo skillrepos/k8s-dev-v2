@@ -50,11 +50,10 @@ There is a simple one-node Kubernetes instance called **minikube** available in 
 ```
 
 ## 4. Set aliases
-Set up a couple of simple aliases for tooling
+Set up an alias for tooling
 
 ```
 alias k=kubectl
-alias kz=kustomize
 ```
 
 ## 5. Open Labs in Preview mode
