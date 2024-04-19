@@ -1,12 +1,11 @@
 # Kubernetes for Devs
 ## An introduction to Kubernetes for Developers
 ## Session labs for codespace only
-## Revision 3.4 - 04/16/24
+## Revision 3.5 - 04/19/24
 
 **Startup IF NOT ALREADY DONE!**
 ```
 alias k=kubectl
-alias kz=kustomize
 minikube start
 ```
 **NOTE: To copy and paste in the codespace using the mouse, you will need to hold down the 'Shift' key while you click 'Copy' or 'Paste'. Alternatively, you can use the keyboard commands - CTRL+C and CTRL+V.**
@@ -684,13 +683,6 @@ Ingore the warning. Watch the changes happening to the pods in the terminal wind
 
 ```
 k delete ns roar-helm
-```
-
-12. In prep for the next lab, install *kustomize* by running the commands below.
-
-```
-curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
-sudo mv kustomize /usr/local/bin/kustomize
 ```
 
 <p align="center">
