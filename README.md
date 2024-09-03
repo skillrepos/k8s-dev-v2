@@ -43,14 +43,7 @@ There is a simple one-node Kubernetes instance called **minikube** available in 
 🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
 ```
 
-## 4. Set aliases
-Set up an alias for tooling
-
-```
-alias k=kubectl
-```
-
-## 5. Open Labs in Preview mode
+## 3. Open Labs in Preview mode
 
 After the codespace has started, you can close the *Welcome* doc by clicking on the X in its tab. Then open the labs document by going to the file tree on the left, find the file named **codespace-labs.md**, right-click on it, and open it with the **Preview** option.)
 
@@ -61,7 +54,7 @@ Any command in the gray boxes is either code intended to be run in the console o
 
 Labs doc: [Kubernetes for Developers Deep Dive Labs](codespace-labs.md)
 
-## 6. Set codespace timeout (optional but recommended)
+## 4. Set codespace timeout (optional but recommended)
 
 While logged in to GitHub, go to https://github.com/settings/codespaces.
 
