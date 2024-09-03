@@ -4,28 +4,22 @@ These instructions will guide you through configuring a GitHub Codespaces enviro
 
 These steps **must** be completed prior to starting the actual labs.
 
-## 1. Create your own repository for these labs
+## 1. Create your own codespace to run the labs by clicking on the button below.
+<br/><br/>
 
-- Ensure that you have created a repository by forking the [skillrepos/k8s-dev-v2](https://github.com/skillrepos/k8s-dev-v2) project as a template into your own GitHub area.
-- You do this by clicking the `Fork` button in the upper right portion of the main project page and following the steps to create a copy in **your-github-userid/k8s-dev-v2** .
+Click here ------> [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/skillrepos/k8s-dev-v2?quickstart=1)
 
-![Forking repository](./images/k8sdev1.png?raw=true "Forking the repository")
+<br/><br/>
 
-![Forking repository](./images/k8sdev32.png?raw=true "Forking the repository")
+Then click on the option to create a new codespace.
 
-## 2. Configure your codespace
+![Creating new codespace from button](./images/k8s-dev-v201.png?raw=true "Creating new codespace from button")
 
-In your forked repository, start a new codespace.
+**This will run for several minutes while it gets everything ready.**
 
-    - Click the `Code` button on your repository's landing page.
-    - Click the `Codespaces` tab.
-    - Click `Create codespaces on main` to create the codespace.
-    - After the codespace has initialized there will be a terminal present.
+<br/><br/>
 
-![Starting codespace](./images/k8sdev2.png?raw=true "Starting your codespace")
-
-
-## 3. Start your single-node Kubernetes cluster
+## 2. Start your single-node Kubernetes cluster
 There is a simple one-node Kubernetes instance called **minikube** available in your codespace. Start it the following way:
 
     - Run the following commands in the codespace's terminal (**This will take several minutes to run...**):
