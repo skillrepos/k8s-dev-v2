@@ -21,5 +21,6 @@
         "ms-azuretools.vscode-docker"
       ]
     }
-  } 
+  },
+  "postCreateCommand": "echo alias k=kubectl >> ~/.bash_aliases" 
 }
