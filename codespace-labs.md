@@ -1,11 +1,10 @@
 # Kubernetes for Devs
 ## An introduction to Kubernetes for Developers
 ## Session labs for codespace only
-## Revision 3.5 - 04/19/24
+## Revision 3.6 - 09/03/24
 
 **Startup IF NOT ALREADY DONE!**
 ```
-alias k=kubectl
 minikube start
 ```
 **NOTE: To copy and paste in the codespace using the mouse, you will need to hold down the 'Shift' key while you click 'Copy' or 'Paste'. Alternatively, you can use the keyboard commands - CTRL+C and CTRL+V.**
@@ -108,8 +107,8 @@ In the codespace, right-click and select the `Split Terminal` option. This will 
 
 ![Splitting the terminal](./images/k8sdev4a.png?raw=true "Splitting the terminal")
 
-12.  In the right terminal, run a command to start a `watch` of pods in the roar namespace. The watch will continue running until we stop it.  ( Note you will need to add *alias k=kubectl* if you want it there. )
-
+12.  In the right terminal, run a command to start a `watch` of pods in the roar namespace. The watch will continue running until we stop it.
+    
 ```
 kubectl get -n roar pods -w
 ```
