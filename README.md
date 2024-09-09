@@ -2,7 +2,7 @@
 
 These instructions will guide you through configuring a GitHub Codespaces environment that you can use to run the course labs.
 
-These steps **must** be completed prior to starting the actual labs.
+These steps should be completed prior to starting the actual labs.
 
 ## 1. Create your own codespace to run the labs by clicking on the button below.
 <br/><br/>
@@ -28,7 +28,7 @@ There is a simple one-node Kubernetes instance called **minikube** available in 
       minikube start
       ```
 
-    - The output should look similar to the following.
+    - The output should look similar to the following. 
 
 ```console
 😄  minikube v1.30.1 on Ubuntu 20.04 (docker/amd64)
@@ -42,8 +42,11 @@ There is a simple one-node Kubernetes instance called **minikube** available in 
 🌟  Enabled addons: storage-provisioner, default-storageclass
 🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
 ```
+(**NOTE:** If you get a failure message like this "Exiting due to DRV_DOCKER_NOT_RUNNING: Found docker, but the docker service isn't running. Try restarting the docker service.", that means that Docker is still starting up. Just wait a minute or two and then run the command again.)
 
-## 3. Open Labs in Preview mode
+## 3. Open the labs doc. 
+
+You can open the labs doc either in a separate browser tab/window via [Open Labs Document in Browser](https://github.com/skillrepos/k8s-dev-v2/blob/main/codespace-labs.md) and/or you can open the labs in the codespace itself. To open it in the codespace, follow the instructions below.
 
 After the codespace has started, you can close the *Welcome* doc by clicking on the X in its tab. Then open the labs document by going to the file tree on the left, find the file named **codespace-labs.md**, right-click on it, and open it with the **Preview** option.)
 
@@ -64,3 +67,4 @@ Increase the default timeout value to 90 minutes and then select the *Save* butt
 
 ![Increasing default timeout](./images/k8sdev33.png?raw=true "Increasing default timeout")
 
+(**NOTE**: If your codespace does time out at some point in the course, there should be a button to restart it. In that case, you will need to run the *minikube start* command again and might have to push your images to the local registry again.)
