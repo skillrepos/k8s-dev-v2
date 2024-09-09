@@ -67,4 +67,4 @@ Increase the default timeout value to 90 minutes and then select the *Save* butt
 
 ![Increasing default timeout](./images/k8sdev33.png?raw=true "Increasing default timeout")
 
-(**NOTE**: If your codespace does time out at some point in the course, there should be a button to restart it. In that case, you will need to run the *minikube start* command again and might have to push your images to the local registry again.)
+(**NOTE**: If your codespace does time out at some point in the course, there should be a button to restart it. In that case, you will need to run the *minikube start* command again.)
