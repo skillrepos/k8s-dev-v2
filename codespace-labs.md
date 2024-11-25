@@ -429,7 +429,7 @@ k apply -f roar-complete.yaml
 ./update-db.sh <namespace>
 ```
 
- (such as ./update-db.sh roar)
+ (such as ./update-db.sh roar)  If you happen to get an "Access denied" message, wait a moment and try again.
 
 12.	 Refresh the browser to force data to be written out the disk location.
 
