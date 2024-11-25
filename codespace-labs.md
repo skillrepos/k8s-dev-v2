@@ -1,7 +1,7 @@
 # Kubernetes for Devs
 ## An introduction to Kubernetes for Developers
 ## Session labs for codespace only
-## Revision 3.6 - 09/03/24
+## Revision 3.7 - 11/25/24
 
 **Startup IF NOT ALREADY DONE!**
 ```
@@ -27,7 +27,7 @@ Take a look at the yaml file there for the Kubernetes deployments and services. 
  See if you can identify the different services and deployments in the file.
 
  No changes need to be made.
- Return to this tab when done.
+ Return to this doc when done.
 
 2. We’re going to deploy these into Kubernetes into a namespace. Take a look at the current list of
 namespaces and then let’s create a new namespace to use.
@@ -38,8 +38,8 @@ k get ns
 k create ns roar
 ```
 
-3. Now, let’s deploy our yaml specifications to Kubernetes. We will use the apply
-command and the -f option to specify the file. (Note the -n option to specify our
+3. Now, let’s deploy our yaml specifications to Kubernetes. We will use the *apply*
+command and the -f option to specify the file.  (Note the -n option to specify our
 new namespace.)
 
 ```
@@ -118,6 +118,7 @@ kubectl get -n roar pods -w
 ```
 export EDITOR='code --wait'
 ```
+![Commands in terminal](./images/k8sdev39.png?raw=true "Commands in terminal")
 
 14. Edit the existing object.
 
