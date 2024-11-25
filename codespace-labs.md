@@ -128,7 +128,7 @@ k edit deploy/roar-web
 
 15. Change line 39 to use 1.0.1 instead of 1.10.1 in the file.  
 Save your changes and close the editor by clicking on the X in the tab at the 
-top to save and close the file. 
+top to save and close the file. (The 'X' may not be visible until you hover over the dot in that location.)
 
 ![Editing the file](./images/k8sdev5.png?raw=true "Editing the file")
 
