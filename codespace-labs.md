@@ -463,7 +463,7 @@ k config set-context --current --namespace=default
 
 2.	In the manifests subdir, we have the “regular” Kubernetes manifests for our app, with the database pieces in a sub area under the web app pieces.  Then in the helm  subdir, we have a similar structure with the charts for the two apps.  
 
-To get a better idea of how Helm structures content, do a diff of the two areas. Do one of the tree commands in one terminal and the other in the second terminal.
+To get a better idea of how Helm structures compare, do a diff of the two areas. Do one of the tree commands in one terminal and the other in the second terminal.
 
 ```
 < in left terminal>
