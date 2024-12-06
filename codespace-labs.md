@@ -724,7 +724,7 @@ k -n kubernetes-dashboard create token admin-user
 
 ![logging in to the dashboard](./images/k8sdev22.png?raw=true "Logging in to the dashboard")   
  
-6.	The dashboard for our cluster will now show.  You can select "All namespaces" in the rectangular dropdown at the top, choose K8s objects on the left, and explore.
+6.	The dashboard for our cluster will now show. At first, you will see a "404" message. This is because we don't have anything selected.  You can select "All namespaces" in the rectangular dropdown at the top (next to the search area), choose K8s objects on the left, and explore.
 
 ![working in the dashboard](./images/k8sdev21.png?raw=true "Working in the dashboard")
  
