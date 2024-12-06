@@ -1,13 +1,13 @@
 # Kubernetes for Devs
 ## An introduction to Kubernetes for Developers
 ## Session labs for codespace only
-## Revision 3.7 - 11/25/24
+## Revision 3.8 - 12/06/24
 
 **Startup IF NOT ALREADY DONE!**
 ```
 minikube start
 ```
-**NOTE: To copy and paste in the codespace using the mouse, you will need to hold down the 'Shift' key while you click 'Copy' or 'Paste'. Alternatively, you can use the keyboard commands - CTRL+C and CTRL+V.**
+**NOTE: To copy and paste in the codespace using the mouse, you may need to use the keyboard commands - CTRL+C and CTRL+V or click an option to Allow the paste.**
 
 **Lab 1- Exploring and Deploying into Kubernetes**
 
@@ -22,7 +22,7 @@ we want to create. These can be separate files, or they can be combined. For
 our project, there is a combined one (deployments and services for both the web
 and db pieces) already setup for you in the k8s-dev/roar-k8s directory. 
 
-Take a look at the yaml file there for the Kubernetes deployments and services. Click on the link: [**roar-k8s/roar-complete.yaml**](./roar-k8s/roar-complete.yaml) 
+Take a look at the yaml file there for the Kubernetes deployments and services. Click on the link: [**roar-k8s/roar-complete.yaml**](./roar-k8s/roar-complete.yaml) if in the codespace or you can type *"code roar-k8s/roar-complete.yaml"* in the *TERMINAL* tab to open it. 
  
  See if you can identify the different services and deployments in the file.
 
