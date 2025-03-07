@@ -22,13 +22,13 @@ Then click on the option to create a new codespace.
 ## 2. Start your single-node Kubernetes cluster
 There is a simple one-node Kubernetes instance called **minikube** available in your codespace. Start it the following way:
 
-    - Run the following commands in the codespace's terminal (**This will take several minutes to run...**):
+Run the following commands in the codespace's terminal (**This will take several minutes to run...**):
 
-      ```
-      minikube start
-      ```
+```
+minikube start
+```
 
-    - The output should look similar to the following. 
+The output should look similar to the following. 
 
 ```console
 😄  minikube v1.30.1 on Ubuntu 20.04 (docker/amd64)
