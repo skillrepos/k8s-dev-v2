@@ -1,7 +1,7 @@
 # Kubernetes for Devs
 ## An introduction to Kubernetes for Developers
 ## Session labs for codespace only
-## Revision 3.8 - 12/06/24
+## Revision 3.9 - 03/07/25
 
 **Startup IF NOT ALREADY DONE!**
 ```
@@ -386,7 +386,7 @@ k delete pod -l app=roar-db
 k apply -f storage.yaml
 ```
 
-7.	Now that we have the storage objects instantiated in the namespace, we need to update our spec to use the values from it.  In the file the change would be to add the lines in bold in the container’s spec area (**you do not need to make changes for this step**):
+7.	Now that we have the storage objects instantiated in the namespace, we need to update our spec to use the values from it.  In the file the change would be to add the lines from **volumeMounts** on in the container’s spec area (**you do not need to make changes for this step**):
 
 ```
          spec:
@@ -819,7 +819,7 @@ https://grafana.com/grafana/dashboards/1860
 </p>
 
 <p align="center">
-(c) 2024 Brent Laster and Tech Skills Transformations
+(c) 2025 Brent Laster and Tech Skills Transformations
 </p>
 
 
